@@ -1,0 +1,6 @@
+<h1>{{ list.name }}</h1>
+<ul>
+{% for question in list.question_set.all %}
+    <li>{{ question.word }}</li>
+{% endfor %}
+</ul>
