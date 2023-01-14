@@ -4,22 +4,26 @@ from django.template import loader
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
-from quiz.models import List
+from quiz.models import WordList
 
-# Create your views here.
 def index(request):
-    latest_question_list = List.objects.order_by('-pub_date')[:5]
-    template = loader.get_template('quiz/index.html')
-    context = {
-        'latest_question_list': latest_question_list,
-    }
-    return HttpResponse(template.render(context, request))
-    # return HttpResponse("Hello, world. You're at the quiz index.")
+    response = "Welcome!"
+    return HttpResponse(response)
 
-def detail(request, list_id):
-    list = get_object_or_404(List, pk=list_id)
+def word_lists(request):
+    word_lists = WordList.objects.order_by('-published_date')[:5]
+    return render(request, 'quiz/word_lists.html', {'word_lists': word_lists})
+
+def word_list_detail(request, word_list_id):
+    list = get_object_or_404(WordList, pk=word_list_id)
     return render(request, 'quiz/detail.html', {'list': list})
 
-def words(request, list_id):
-    response = "You're looking at the words of question %s."
-    return HttpResponse(response % list_id)
+def word_list_exercise(request, word_list_id):
+    list = get_object_or_404(WordList, pk=word_list_id)
+    return render(request, 'quiz/detail.html', {'list': list})
+
+def word_list_edit(request, word_list_id):
+    list = get_object_or_404(WordList, pk=word_list_id)
+    return render(request, 'quiz/detail.html', {'list': list})
+
+

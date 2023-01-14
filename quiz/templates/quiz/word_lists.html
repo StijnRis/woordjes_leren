@@ -1,0 +1,9 @@
+{% if word_lists %}
+    <ul>
+    {% for list in word_lists %}
+        <li><a href="{% url 'quiz:word_list_detail' list.id %}">{{ list.name }} - {{ list.date_published }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No word lists are available.</p>
+{% endif %}
