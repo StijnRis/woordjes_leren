@@ -16,14 +16,14 @@ def word_lists(request):
 
 def word_list_detail(request, word_list_id):
     list = get_object_or_404(WordList, pk=word_list_id)
-    return render(request, 'quiz/detail.html', {'list': list})
+    return render(request, 'quiz/detail.html', {'word_list': list})
 
 def word_list_exercise(request, word_list_id):
     list = get_object_or_404(WordList, pk=word_list_id)
-    return render(request, 'quiz/detail.html', {'list': list})
+    return render(request, 'quiz/exercise.html', {'word_list': list})
 
 def word_list_edit(request, word_list_id):
     list = get_object_or_404(WordList, pk=word_list_id)
-    return render(request, 'quiz/detail.html', {'list': list})
+    return render(request, 'quiz/edit.html', {'word_list': list})
 
 

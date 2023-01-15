@@ -1,6 +1,7 @@
 from django.utils import timezone
 import datetime
 from django.db import models
+import random
 
 #python manage.py makemigrations
 #python manage.py migrate
@@ -45,6 +46,12 @@ class Translation(models.Model):
     word_one = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="words1")
     word_two = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="words2")
     difficulty = models.FloatField()
+
+    def getOptions(self):
+        words = Word.objects.all()
+        random_words = random.sample(words, 3)
+        random_words.append(self.word_two)
+        return random_words
 
     def __str__(self):
         return str(self.word_one) + " - " + str(self.word_two) + " ("+str(self.difficulty)+")"

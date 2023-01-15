@@ -1,6 +1,14 @@
-<h1>{{ list.name }}</h1>
-<ul>
-{% for translation in list.material_set.all %}
-    <li>{{ translation }}</li>
-{% endfor %}
-</ul>
+<h1>Exercise: {{ word_list.name }}</h1>
+
+<form action="{% url 'quiz:answer' word_list.id %}" method="post">
+    {% csrf_token %}
+    {% for material in word_list.material_set.all %}
+        <h1>{{ material.translation.word_one }}</h1>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        {% for word in translation.getOptions %}
+            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ word.id }}">
+            <label for="choice{{ forloop.counter }}">{{ word }}</label><br>
+        {% endfor %}
+    {% endfor %}
+    <input type="submit" value="Submit">
+</form>
