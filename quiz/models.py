@@ -3,18 +3,8 @@ import datetime
 from django.db import models
 import random
 
-#python manage.py makemigrations
-#python manage.py migrate
-
-class WordList(models.Model):
-    name = models.CharField(max_length=200)
-    published_date = models.DateTimeField('date published')
-
-    def __str__(self):
-        return self.name
-    
-    def was_published_recently(self):
-        return self.published_date >= timezone.now() - datetime.timedelta(days=1)
+# python manage.py makemigrations
+# python manage.py migrate
 
 
 class Language(models.Model):
@@ -43,18 +33,32 @@ class ExampleUsage(models.Model):
 
 
 class Translation(models.Model):
-    word_one = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="words1")
-    word_two = models.ForeignKey(Word, on_delete=models.CASCADE, related_name="words2")
+    word_one = models.ForeignKey(
+        Word, on_delete=models.CASCADE, related_name='words1')
+    word_two = models.ForeignKey(
+        Word, on_delete=models.CASCADE, related_name='words2')
+    tries = models.IntegerField(default=0)
     difficulty = models.FloatField()
 
     def getOptions(self):
-        words = Word.objects.all()
+        words = list(Word.objects.all())
         random_words = random.sample(words, 3)
         random_words.append(self.word_two)
         return random_words
 
     def __str__(self):
-        return str(self.word_one) + " - " + str(self.word_two) + " ("+str(self.difficulty)+")"
+        return str(self.word_one) + ' - ' + str(self.word_two) + ' ('+str(self.difficulty)+')'
+
+
+class WordList(models.Model):
+    name = models.CharField(max_length=200)
+    published_date = models.DateTimeField('date published')
+
+    def __str__(self):
+        return self.name
+
+    def was_published_recently(self):
+        return self.published_date >= timezone.now() - datetime.timedelta(days=1)
 
 
 class Material(models.Model):
@@ -62,6 +66,4 @@ class Material(models.Model):
     translation = models.ForeignKey(Translation, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return str(self.word_list) + " ("+str(self.translation)+")"
-
-
+        return str(self.translation) + ' in ' + str(self.word_list)

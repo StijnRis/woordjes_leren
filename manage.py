@@ -1,3 +1,10 @@
+'''
+To start:
+Set-ExecutionPolicy Unrestricted -Scope Process
+d:/Programmeren/Websites/woordjes_leren/venv/Scripts/Activate.ps1
+F5
+'''
+
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
@@ -21,7 +28,6 @@ def main():
 if __name__ == '__main__':
     main()
 
-# python manage.py runserver
 
 # python manage.py shell
 '''
@@ -30,4 +36,4 @@ List.objects.all()
 '''
 
 # Where we left:
-# https://docs.djangoproject.com/en/4.1/intro/tutorial03/
+# https://docs.djangoproject.com/en/4.1/intro/tutorial04/
