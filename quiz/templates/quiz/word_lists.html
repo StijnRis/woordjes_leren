@@ -1,9 +1,14 @@
-{% if word_lists %}
-    <ul>
-    {% for word_list in word_lists %}
-        <li><a href="{% url 'quiz:word_list' word_list.id %}">{{ word_list.name }} - {{ word_list.date_published }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No word lists are available.</p>
-{% endif %}
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+    <h1>All words lists</h1>
+    {% if latest_word_lists %}
+        <ul>
+        {% for word_list in latest_word_lists %}
+            <li><a href="{% url 'quiz:word_list' word_list.id %}">{{ word_list.name }} - {{ word_list.date_published }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No word lists are available.</p>
+    {% endif %}
+{% endblock content %}

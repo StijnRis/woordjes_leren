@@ -5,41 +5,46 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib import messages
+from django.views import generic
 
 from quiz.models import WordList, Word, Translation
 
-def index(request):
-    response = "Welcome!"
-    return HttpResponse(response)
+class IndexView(generic.ListView):
+    template_name = 'quiz/word_lists.html'
+    context_object_name = 'latest_word_lists'
 
-def word_lists(request):
-    word_lists = WordList.objects.order_by('-published_date')[:5]
-    return render(request, 'quiz/word_lists.html', {'word_lists': word_lists})
+    def get_queryset(self):
+        return WordList.objects.order_by('-published_date')[:5]
 
-def word_list_detail(request, word_list_id):
-    list = get_object_or_404(WordList, pk=word_list_id)
-    return render(request, 'quiz/detail.html', {'word_list': list})
+class DetailView(generic.DetailView):
+    model = WordList
+    template_name = 'quiz/detail.html'
+    context_object_name = 'word_list'
 
-def word_list_exercise(request, word_list_id):
-    list = get_object_or_404(WordList, pk=word_list_id)
-    return render(request, 'quiz/exercise.html', {'word_list': list})
+class ExerciseView(generic.DetailView):
+    model = WordList
+    template_name = 'quiz/exercise.html'
+    context_object_name = 'word_list'
 
-def multipleChoiceAnswers(request, translation_id):
-    translation = get_object_or_404(Translation, pk=translation_id)
-    try:
-        selected_choice = Word.objects.all().get(pk=request.POST['choice'])
-    except (KeyError, Word.DoesNotExist):
-        return render(request, 'quiz/exercise.html', {
-            'question': translation,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        translation.tries += 1
-        translation.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('polls:word_list', args=(translation.pk,)))
+def answers(request, word_list_id):
+    word_list = get_object_or_404(WordList, pk=word_list_id)
+    print(request.POST)
+    for material in word_list.material_set.all():
+        try:
+            translation = material.translation
+            print(request.POST[f'translation_{translation.id}_choice'])
+            selected_word = Word.objects.all().get(pk=request.POST[f'translation_{translation.id}_choice'])
+        except (KeyError, Word.DoesNotExist) as e:
+            messages.error(request, "You didn't select a choice.")
+            return HttpResponseRedirect(reverse('quiz:word_list_exercise', args=(word_list.id, )))
+        else:
+            if selected_word == translation.word_two:
+                translation.correct_tries += 1
+            else:
+                translation.wrong_tries += 1
+            translation.save()
+    return HttpResponseRedirect(reverse('quiz:word_lists'))
 
     
 

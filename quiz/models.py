@@ -37,7 +37,8 @@ class Translation(models.Model):
         Word, on_delete=models.CASCADE, related_name='words1')
     word_two = models.ForeignKey(
         Word, on_delete=models.CASCADE, related_name='words2')
-    tries = models.IntegerField(default=0)
+    wrong_tries = models.IntegerField(default=0)
+    correct_tries = models.IntegerField(default=0)
     difficulty = models.FloatField()
 
     def getOptions(self):
@@ -47,7 +48,7 @@ class Translation(models.Model):
         return random_words
 
     def __str__(self):
-        return str(self.word_one) + ' - ' + str(self.word_two) + ' ('+str(self.difficulty)+')'
+        return f'{self.word_one} - {self.word_two}  ({self.correct_tries} vs {self.wrong_tries})'
 
 
 class WordList(models.Model):

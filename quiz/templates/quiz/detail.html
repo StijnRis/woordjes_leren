@@ -1,3 +1,6 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
 <h1>{{ word_list.name }}</h1>
 <a href="{% url 'quiz:word_list_exercise' word_list.id %}">Exercise</a>
 <ul>
@@ -5,3 +8,4 @@
     <li>{{ translation }}</li>
 {% endfor %}
 </ul>
+{% endblock content %}

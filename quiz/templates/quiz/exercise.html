@@ -1,16 +1,21 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+
 <h1>Exercise: {{ word_list.name }}</h1>
 
-<form action="{% url 'quiz:answer' word_list.id %}" method="post">
+<form action="{% url 'quiz:answers' word_list.id %}" method="post">
     {% csrf_token %}
     {% for material in word_list.material_set.all %}
         <fieldset>
             <legend>What is {{ material.translation.word_one }} in {{material.translation.word_two.language}}?</legend>
-            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
             {% for word in material.translation.getOptions %}
-                <input type="radio" name="material_{{ material.translation.id}}" id="choice_{{ forloop.counter }}" value="{{ word.id }}">
+                <input type="radio" name="translation_{{ material.translation.id}}_choice" id="choice_{{ forloop.counter }}" value="{{ word.id }}">
                 <label for="choice_{{ forloop.counter }}">{{ word }}</label><br>
             {% endfor %}
         </fieldset>
     {% endfor %}
     <input type="submit" value="Submit">
 </form>
+
+{% endblock content %}
