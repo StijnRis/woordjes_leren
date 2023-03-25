@@ -2,7 +2,10 @@
 To start:
 Set-ExecutionPolicy Unrestricted -Scope Process
 d:/Programmeren/Websites/woordjes_leren/venv/Scripts/Activate.ps1
-F5
+python manage.py runserver
+
+Shell:
+python manage.py shell
 '''
 
 #!/usr/bin/env python

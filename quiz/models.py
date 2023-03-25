@@ -34,9 +34,9 @@ class ExampleUsage(models.Model):
 
 class Translation(models.Model):
     word_one = models.ForeignKey(
-        Word, on_delete=models.CASCADE, related_name='words1')
+        Word, on_delete=models.CASCADE, related_name='translations_from')
     word_two = models.ForeignKey(
-        Word, on_delete=models.CASCADE, related_name='words2')
+        Word, on_delete=models.CASCADE, related_name='translations_to')
     wrong_tries = models.IntegerField(default=0)
     correct_tries = models.IntegerField(default=0)
     difficulty = models.FloatField()
@@ -50,10 +50,11 @@ class Translation(models.Model):
     def __str__(self):
         return f'{self.word_one} - {self.word_two}  ({self.correct_tries} vs {self.wrong_tries})'
 
-
 class WordList(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='word_lists', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     published_date = models.DateTimeField('date published')
+    translations = models.ManyToManyField(Translation)
 
     def __str__(self):
         return self.name
@@ -62,9 +63,4 @@ class WordList(models.Model):
         return self.published_date >= timezone.now() - datetime.timedelta(days=1)
 
 
-class Material(models.Model):
-    word_list = models.ForeignKey(WordList, on_delete=models.CASCADE)
-    translation = models.ForeignKey(Translation, on_delete=models.CASCADE)
 
-    def __str__(self) -> str:
-        return str(self.translation) + ' in ' + str(self.word_list)
