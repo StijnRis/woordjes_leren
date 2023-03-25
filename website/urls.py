@@ -20,7 +20,8 @@ from rest_framework import routers
 from quiz import views
 
 urlpatterns = [
-    path('quiz/', include('quiz.urls')),
+    path('', include('quiz.urls')),
     path('admin/', admin.site.urls),
     # path('index', views.index),
+    path('api-auth/', include('rest_framework.urls')),
 ]

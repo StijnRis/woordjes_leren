@@ -4,13 +4,13 @@ from django.template import loader
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 from django.contrib import messages
 from django.views import generic
 from rest_framework import viewsets
 from rest_framework import permissions
 from django.contrib.auth.models import User, Group
-from quiz.serializers import TranslationSerializer, UserSerializer
+from quiz.permissions import IsOwnerOrReadOnly
+from quiz.serializers import TranslationSerializer, UserSerializer, WordListSerializer, WordSerializer
 from quiz.models import WordList, Word, Translation
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
@@ -22,6 +22,8 @@ from rest_framework.views import APIView
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import generics
+from rest_framework.reverse import reverse
+from rest_framework import viewsets
 
 class IndexView(generic.ListView):
     template_name = 'quiz/word_lists.html'
@@ -64,20 +66,27 @@ def answers(request, word_list_id):
     return HttpResponseRedirect(reverse('quiz:word_lists'))
 
 
-class TranslationList(generics.ListCreateAPIView):
+class WordViewSet(viewsets.ModelViewSet):
+    queryset = Word.objects.all()
+    serializer_class = WordSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class WordListViewSet(viewsets.ModelViewSet):
+    queryset = WordList.objects.all()
+    serializer_class = WordListSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class TranslationViewSet(viewsets.ModelViewSet):
     queryset = Translation.objects.all()
     serializer_class = TranslationSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class TranslationDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Translation.objects.all()
-    serializer_class = TranslationSerializer
-
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserDetail(generics.RetrieveAPIView):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
