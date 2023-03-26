@@ -1,10 +1,46 @@
 from django.contrib import admin
 from django.apps import apps
 
-# from .models import WordList, Word, Translation, Material
+from .models import Wordlist, Word, Translation, Language, Sentence
 
-app = apps.get_app_config('quiz')
 
-# Register all models
-for model_name, model in app.models.items():
-    admin.site.register(model)
+@admin.register(Wordlist)
+class WordlistAdmin(admin.ModelAdmin):
+    list_display = ('name', 'owner', 'visibility')
+    list_filter = ('visibility', 'owner')
+
+
+@admin.register(Word)
+class WordAdmin(admin.ModelAdmin):
+    list_display = ('name', 'language')
+    list_filter = ('language', )
+
+
+class WordInline(admin.TabularInline):
+    model = Word.usage.through
+    extra = 0
+
+
+@admin.register(Translation)
+class TranslationAdmin(admin.ModelAdmin):
+    list_display = ('word', 'translation', 'difficulty')
+    fieldsets = (
+        (None, {
+            'fields': ('word', 'translation')
+        }),
+        ('Stats', {
+            'fields': ('difficulty', 'correct_tries', 'wrong_tries')
+        }),
+    )
+
+
+@admin.register(Language)
+class LanguageAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+
+
+@admin.register(Sentence)
+class SentenceAdmin(admin.ModelAdmin):
+    list_display = ('language', 'sentence')
+    list_filter = ('language', )
+    inlines = [WordInline]
