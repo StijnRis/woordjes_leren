@@ -51,7 +51,10 @@ class Translation(models.Model):
         return random_words
 
     def __str__(self):
-        return f'{self.word} to {self.translation}  ({self.correct_tries} vs {self.wrong_tries})'
+        percentage = "-"
+        if self.correct_tries > 0:
+            percentage = str(round(self.correct_tries / (self.correct_tries + self.wrong_tries) * 100)) + '%'
+        return f'{self.word} -> {self.translation}  ({percentage})'
 
 
 class Wordlist(models.Model):
@@ -80,4 +83,4 @@ class Wordlist(models.Model):
         return self.published_date >= timezone.now() - datetime.timedelta(days=1)
 
     def __str__(self):
-        return f'{self.owner}: {self.name}'
+        return f'{self.name}'
