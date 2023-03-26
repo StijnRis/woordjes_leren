@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.utils import timezone
 import datetime
 from django.db import models
@@ -8,59 +9,75 @@ import random
 
 
 class Language(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(
+        max_length=200, help_text='The name of the language')
 
     def __str__(self):
-        return self.name
-
-
-class Word(models.Model):
-    name = models.CharField(max_length=200)
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class Sentence(models.Model):
     sentence = models.CharField(max_length=1000)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.sentence}'
 
-class ExampleUsage(models.Model):
-    sentence = models.ForeignKey(Sentence, on_delete=models.CASCADE)
-    word = models.ForeignKey(Word, on_delete=models.CASCADE)
+
+class Word(models.Model):
+    name = models.CharField(
+        max_length=200, help_text='How the word is spelled')
+    language = models.ForeignKey(
+        Language, on_delete=models.SET_NULL, help_text='The language of this word', null=True)
+    usage = models.ManyToManyField(Sentence, )
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Translation(models.Model):
-    word_one = models.ForeignKey(
-        Word, on_delete=models.CASCADE, related_name='translations_from')
-    word_two = models.ForeignKey(
-        Word, on_delete=models.CASCADE, related_name='translations_to')
+    word = models.ForeignKey(
+        Word, on_delete=models.RESTRICT, related_name='words')
+    translation = models.ForeignKey(
+        Word, on_delete=models.RESTRICT, related_name='translations')
     wrong_tries = models.IntegerField(default=0)
     correct_tries = models.IntegerField(default=0)
     difficulty = models.FloatField()
 
-    def getOptions(self):
+    def get_options(self):
         words = list(Word.objects.all())
         random_words = random.sample(words, 3)
-        random_words.append(self.word_two)
+        random_words.append(self.translation)
         return random_words
 
     def __str__(self):
-        return f'{self.word_one} - {self.word_two}  ({self.correct_tries} vs {self.wrong_tries})'
+        return f'{self.word} to {self.translation}  ({self.correct_tries} vs {self.wrong_tries})'
 
-class WordList(models.Model):
-    owner = models.ForeignKey('auth.User', related_name='word_lists', on_delete=models.CASCADE)
+
+class Wordlist(models.Model):
+    owner = models.ForeignKey(
+        'auth.User', related_name='wordlists', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     published_date = models.DateTimeField('date published')
-    translations = models.ManyToManyField(Translation)
+    translations = models.ManyToManyField(Translation, help_text='The translations in this word list.')
 
-    def __str__(self):
-        return self.name
+    VISIBILITY_STATUS = (
+        ('pr', 'Private'),
+        ('pl', 'Public'),
+        ('re', 'Under review'),
+    )
+    visibility = models.CharField(
+        max_length=2,
+        choices=VISIBILITY_STATUS,
+        default='pr',
+        help_text='Visibily status',
+    )
+
+    def get_absolute_url(self):
+        return reverse('wordlist-detail', args=[str(self.id)])
 
     def was_published_recently(self):
         return self.published_date >= timezone.now() - datetime.timedelta(days=1)
 
-
-
+    def __str__(self):
+        return f'{self.owner}: {self.name}'

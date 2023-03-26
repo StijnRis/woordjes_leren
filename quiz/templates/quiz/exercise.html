@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<h1>Exercise: {{ word_list.name }}</h1>
+<h1>Exercise: {{ wordlist.name }}</h1>
 
-<form action="{% url 'quiz:answers' word_list.id %}" method="post">
+<form action="{% url 'answers' wordlist.id %}" method="post">
     {% csrf_token %}
-    {% for material in word_list.material_set.all %}
+    {% for material in wordlist.material_set.all %}
         <fieldset>
             <legend>What is {{ material.translation.word_one }} in {{material.translation.word_two.language}}?</legend>
             {% for word in material.translation.getOptions %}

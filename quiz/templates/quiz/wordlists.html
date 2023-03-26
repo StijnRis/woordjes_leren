@@ -2,10 +2,10 @@
 
 {% block content %}
     <h1>All words lists</h1>
-    {% if latest_word_lists %}
+    {% if latest_wordlists %}
         <ul>
-        {% for word_list in latest_word_lists %}
-            <li><a href="{% url 'quiz:word_list' word_list.id %}">{{ word_list.name }} - {{ word_list.date_published }}</a></li>
+        {% for wordlist in latest_wordlists %}
+            <li><a href="{% url 'wordlist-detail' wordlist.id %}">{{ wordlist.name }} - {{ wordlist.date_published }}</a></li>
         {% endfor %}
         </ul>
     {% else %}

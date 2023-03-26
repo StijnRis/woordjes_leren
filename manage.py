@@ -40,3 +40,6 @@ List.objects.all()
 
 # Where we left:
 # https://docs.djangoproject.com/en/4.1/intro/tutorial04/
+# 
+# 
+# https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Admin_site

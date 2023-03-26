@@ -11,7 +11,7 @@ from rest_framework import permissions
 from django.contrib.auth.models import User, Group
 from quiz.permissions import IsOwnerOrReadOnly
 from quiz.serializers import TranslationSerializer, UserSerializer, WordListSerializer, WordSerializer
-from quiz.models import WordList, Word, Translation
+from quiz.models import Wordlist, Word, Translation
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -26,29 +26,28 @@ from rest_framework.reverse import reverse
 from rest_framework import viewsets
 
 class IndexView(generic.ListView):
-    template_name = 'quiz/word_lists.html'
-    context_object_name = 'latest_word_lists'
+    template_name = 'quiz/wordlists.html'
+    context_object_name = 'latest_wordlists'
 
     def get_queryset(self):
-        return WordList.objects.order_by('-published_date')[:5]
+        return Wordlist.objects.order_by('-published_date')[:5]
 
 
 class DetailView(generic.DetailView):
-    model = WordList
+    model = Wordlist
     template_name = 'quiz/detail.html'
-    context_object_name = 'word_list'
+    context_object_name = 'wordlist'
 
 
 class ExerciseView(generic.DetailView):
-    model = WordList
+    model = Wordlist
     template_name = 'quiz/exercise.html'
-    context_object_name = 'word_list'
+    context_object_name = 'wordlist'
 
-
-def answers(request, word_list_id):
-    word_list = get_object_or_404(WordList, pk=word_list_id)
+def answers(request, wordlist_id):
+    wordlist = get_object_or_404(Wordlist, pk=wordlist_id)
     print(request.POST)
-    for material in word_list.material_set.all():
+    for material in wordlist.material_set.all():
         try:
             translation = material.translation
             print(request.POST[f'translation_{translation.id}_choice'])
@@ -56,15 +55,14 @@ def answers(request, word_list_id):
                 pk=request.POST[f'translation_{translation.id}_choice'])
         except (KeyError, Word.DoesNotExist) as e:
             messages.error(request, "You didn't select a choice.")
-            return HttpResponseRedirect(reverse('quiz:word_list_exercise', args=(word_list.id, )))
+            return HttpResponseRedirect(reverse('quiz:wordlist_exercise', args=(wordlist.id, )))
         else:
             if selected_word == translation.word_two:
                 translation.correct_tries += 1
             else:
                 translation.wrong_tries += 1
             translation.save()
-    return HttpResponseRedirect(reverse('quiz:word_lists'))
-
+    return HttpResponseRedirect(reverse('quiz:wordlists'))
 
 class WordViewSet(viewsets.ModelViewSet):
     queryset = Word.objects.all()
@@ -73,7 +71,7 @@ class WordViewSet(viewsets.ModelViewSet):
 
 
 class WordListViewSet(viewsets.ModelViewSet):
-    queryset = WordList.objects.all()
+    queryset = Wordlist.objects.all()
     serializer_class = WordListSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
