@@ -29,7 +29,7 @@ class Word(models.Model):
         max_length=200, help_text='How the word is spelled')
     language = models.ForeignKey(
         Language, on_delete=models.SET_NULL, help_text='The language of this word', null=True)
-    usage = models.ManyToManyField(Sentence, )
+    usage = models.ManyToManyField(Sentence, blank=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -61,7 +61,7 @@ class Wordlist(models.Model):
     owner = models.ForeignKey(
         'auth.User', related_name='wordlists', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
-    published_date = models.DateTimeField('date published')
+    date_published = models.DateTimeField('date published', auto_now_add=True)
     translations = models.ManyToManyField(Translation, help_text='The translations in this word list.')
 
     VISIBILITY_STATUS = (
@@ -78,9 +78,12 @@ class Wordlist(models.Model):
 
     def get_absolute_url(self):
         return reverse('wordlist-detail', args=[str(self.id)])
+    
+    def get_absolute_exersice_url(self):
+        return reverse('wordlist-exercise', args=[str(self.id)])
 
     def was_published_recently(self):
-        return self.published_date >= timezone.now() - datetime.timedelta(days=1)
+        return self.date_published >= timezone.now() - datetime.timedelta(days=1)
 
     def __str__(self):
         return f'{self.name}'

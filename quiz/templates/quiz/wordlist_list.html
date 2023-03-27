@@ -1,0 +1,18 @@
+{% extends 'quiz/base_generic.html' %}
+
+{% block title %}
+Alle woordenlijsten
+{% endblock %}
+
+{% block content %}
+    <h1>All wordlists</h1>
+    {% if latest_wordlists %}
+        <ul>
+        {% for wordlist in latest_wordlists %}
+            <li><a href="{{ wordlist.get_absolute_url }}">{{ wordlist.name }}</a> ({{ wordlist.date_published }})</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No wordlists are available.</p>
+    {% endif %}
+{% endblock content %}

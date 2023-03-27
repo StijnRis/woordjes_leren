@@ -1,0 +1,26 @@
+{% extends 'quiz/base_generic.html' %}
+
+{% block title %}
+{{ wordlist.name }} - Overzicht
+{% endblock %}
+
+{% block content %}
+<h1>{{ wordlist.name }}</h1>
+<p><strong>Owner:</strong> {{ wordlist.owner.get_username }}</p>
+<p><strong>Date published:</strong> {{ wordlist.date_published }}</p>
+
+<div>
+    <h2>Translations</h2>
+    <ul>
+    {% for translation in  wordlist.translations.all %}
+    <li>{{ translation }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div>
+    <h2>Actions</h2>
+    <a href="{{wordlist.get_absolute_exersice_url}}">Exercise</a>
+</div>
+
+{% endblock content %}

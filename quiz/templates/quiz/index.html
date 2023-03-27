@@ -1,0 +1,18 @@
+{% extends "quiz/base_generic.html" %}
+
+{% block title %}
+Woordjes Leren Home
+{% endblock %}
+
+{% block content %}
+<h1>Woordjes Leren Home</h1>
+<p>Welkom, een website gemaakt door <em>mensen</em>!</p>
+<h2>Statestieken</h2>
+<p>De volgende statieken zijn bij ons bekend:</p>
+<ul>
+    <li><strong>Talen:</strong> {{ num_languages }}</li>
+    <li><strong>Woorden:</strong> {{ num_words }}</li>
+    <li><strong>Vertalingen:</strong> {{ num_translations }}</li>
+    <li><strong>Geoefende vertaling:</strong> {{ num_practiced_translations }}</li>
+</ul>
+{% endblock %}
