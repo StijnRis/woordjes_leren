@@ -1,0 +1,20 @@
+{% extends 'quiz/base_generic.html' %}
+
+{% block title %}
+{{ language.name }} - Overzicht
+{% endblock %}
+
+{% block content %}
+<h1>Taal: {{ language.name }}</h1>
+
+<div>
+    <h2>Voorbeeld woordjes</h2>
+    <ul>
+    {% for word in language.word_set.all %}
+        <li>{{ word.name }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+
+{% endblock content %}

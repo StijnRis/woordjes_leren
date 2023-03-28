@@ -35,19 +35,41 @@ def index(request):
     num_translations = Translation.objects.count()
     num_practiced_translations = Translation.objects.filter(wrong_tries__gt=0, correct_tries__gt=0).count()
 
+    # Number of visits to this view, as counted in the session variable.
+    num_visits = request.session.get('num_visits', 0) + 1
+    request.session['num_visits'] = num_visits
+
     context = {
         'num_languages': num_languages,
         'num_words': num_words,
         'num_translations': num_translations,
         'num_practiced_translations': num_practiced_translations,
+        'num_visits': num_visits,
     }
 
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'quiz/index.html', context=context)
 
 
+class LanguageListView(generic.ListView):
+    model = Language
+    paginate_by = 10
+    template_name = 'quiz/language_list.html'
+    context_object_name = 'languages'
+
+    def get_queryset(self):
+        return Language.objects.all()[:5]
+
+
+class LanguageDetailView(generic.DetailView):
+    model = Language
+    template_name = 'quiz/language_detail.html'
+    context_object_name = 'language'
+    
+
 class WordlistListView(generic.ListView):
     model = Wordlist
+    paginate_by = 10
     template_name = 'quiz/wordlist_list.html'
     context_object_name = 'latest_wordlists'
 

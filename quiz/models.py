@@ -12,6 +12,9 @@ class Language(models.Model):
     name = models.CharField(
         max_length=200, help_text='The name of the language')
 
+    def get_absolute_url(self):
+        return reverse("language-detail", kwargs={"pk": self.pk})
+
     def __str__(self):
         return f'{self.name}'
 
@@ -77,10 +80,10 @@ class Wordlist(models.Model):
     )
 
     def get_absolute_url(self):
-        return reverse('wordlist-detail', args=[str(self.id)])
+        return reverse('wordlist-detail', kwargs={"pk": self.pk})
     
     def get_absolute_exersice_url(self):
-        return reverse('wordlist-exercise', args=[str(self.id)])
+        return reverse('wordlist-exercise', kwargs={"pk": self.pk})
 
     def was_published_recently(self):
         return self.date_published >= timezone.now() - datetime.timedelta(days=1)

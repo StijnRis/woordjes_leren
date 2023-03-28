@@ -5,7 +5,7 @@ Alle woordenlijsten
 {% endblock %}
 
 {% block content %}
-    <h1>All wordlists</h1>
+    <h1>Alle woordenlijsten</h1>
     {% if latest_wordlists %}
         <ul>
         {% for wordlist in latest_wordlists %}
@@ -13,6 +13,6 @@ Alle woordenlijsten
         {% endfor %}
         </ul>
     {% else %}
-        <p>No wordlists are available.</p>
+        <p>Geen woordenlijsten beschikbaar</p>
     {% endif %}
 {% endblock content %}
