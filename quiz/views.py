@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
@@ -8,7 +9,6 @@ from django.contrib import messages
 from django.views import generic
 from rest_framework import viewsets
 from rest_framework import permissions
-from django.contrib.auth.models import User, Group
 from quiz.permissions import IsOwnerOrReadOnly
 from quiz.serializers import TranslationSerializer, UserSerializer, WordListSerializer, WordSerializer
 from quiz.models import Wordlist, Word, Translation, Language, Sentence
@@ -24,6 +24,8 @@ from rest_framework import generics
 from rest_framework import generics
 from rest_framework.reverse import reverse
 from rest_framework import viewsets
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def index(request):
@@ -83,6 +85,18 @@ class WordlistListView(generic.ListView):
         context['some_data'] = 'This is just some data'
         return context
 
+class WordlistFromUserListView(LoginRequiredMixin,generic.ListView):
+    """Generic class-based view listing the wordlists the current user owns."""
+    model = Wordlist
+    template_name = 'quiz/wordlist_personal_list.html'
+    paginate_by = 10
+    context_object_name = 'wordlists'
+
+    def get_queryset(self):
+        return (
+            Wordlist.objects.filter(owner=self.request.user)
+            .order_by('name')
+        )
 
 class WordlistDetailView(generic.DetailView):
     model = Wordlist
@@ -138,5 +152,5 @@ class TranslationViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer

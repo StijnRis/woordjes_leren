@@ -17,6 +17,7 @@ urlpatterns = [
     path('languages/', views.LanguageListView.as_view(), name='language-list'),
     path('language/<int:pk>/', views.LanguageDetailView.as_view(), name='language-detail'),
     path('wordlists/', views.WordlistListView.as_view(), name='wordlist-list'),
+    path('my_wordlists/', views.WordlistFromUserListView.as_view(), name='my-wordlist-list'),
     path('wordlist/<int:pk>/', views.WordlistDetailView.as_view(), name='wordlist-detail'),
     path('wordlist/<int:pk>/exercise/', views.WordlistExerciseView.as_view(), name='wordlist-exercise'),
     path('wordlist/<int:wordlist_id>/answers/', views.answers, name='answers'),

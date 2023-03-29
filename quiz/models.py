@@ -1,9 +1,9 @@
+from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 import datetime
 from django.db import models
 import random
-
 # python manage.py makemigrations
 # python manage.py migrate
 
@@ -62,7 +62,7 @@ class Translation(models.Model):
 
 class Wordlist(models.Model):
     owner = models.ForeignKey(
-        'auth.User', related_name='wordlists', on_delete=models.SET_NULL, null=True)
+        settings.AUTH_USER_MODEL, related_name='wordlists', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     date_published = models.DateTimeField('date published', auto_now_add=True)
     translations = models.ManyToManyField(Translation, help_text='The translations in this word list.')
