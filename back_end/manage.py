@@ -1,12 +1,3 @@
-'''
-To start (type in powershell):
-Set-ExecutionPolicy Unrestricted -Scope Process
-.\/venv/Scripts/Activate.ps1
-python manage.py runserver
-
-Shell:
-python manage.py shell
-'''
 
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
