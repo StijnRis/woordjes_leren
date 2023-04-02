@@ -1,15 +1,11 @@
-import React from 'react'
+import React from "react";
 
 interface Props {
-    children: string
+  children: string;
 }
 
-const SubmitButton = ({children}: Props) => {
-  return (
-    <div className="button-submit">
-        {children}
-    </div>
-  )
-}
+const SubmitButton = ({ children }: Props) => {
+  return <div className="button-submit">{children}</div>;
+};
 
-export default SubmitButton
+export default SubmitButton;

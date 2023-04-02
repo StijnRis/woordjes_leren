@@ -1,13 +1,11 @@
-import React from 'react'
+import React from "react";
 
 interface Props {
-    word: string
+  word: string;
 }
 
-const Word = ({word}: Props) => {
-  return (
-    <span id="word">{word}</span>
-  )
-}
+const Word = ({ word }: Props) => {
+  return <span id="word">{word}</span>;
+};
 
-export default Word
+export default Word;

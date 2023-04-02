@@ -1,13 +1,15 @@
-import React from 'react'
+import React from "react";
 
 interface Props {
-  onClick: () => void
+  onClick: () => void;
 }
 
-const HintButton = ({onClick}: Props) => {
+const HintButton = ({ onClick }: Props) => {
   return (
-    <div className="button-hint" onClick={onClick}>?</div>
-  )
-}
+    <div className="button-hint" onClick={onClick}>
+      ?
+    </div>
+  );
+};
 
-export default HintButton
+export default HintButton;

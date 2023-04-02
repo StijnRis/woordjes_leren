@@ -1,17 +1,16 @@
-import React, { useState } from 'react'
-import Word from './components/Word'
-import HintButton from './components/HintButton'
-import HintSentence from './components/HintSentence'
-import SubmitButton from './components/SubmitButton'
+import React, { useState } from "react";
+import Word from "./components/Word";
+import HintButton from "./components/HintButton";
+import HintSentence from "./components/HintSentence";
+import SubmitButton from "./components/SubmitButton";
 
 interface Props {
-  language: string,
-  word: string,
-  hintSentence: string,
+  language: string;
+  word: string;
+  hintSentence: string;
 }
 
-const TranslateExcersice = ({language, word, hintSentence}: Props) => {
-
+const TranslateExcersice = ({ language, word, hintSentence }: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
 
   return (
@@ -19,14 +18,15 @@ const TranslateExcersice = ({language, word, hintSentence}: Props) => {
       <span id="instruction">Vertaal naar het {language}</span>
 
       <div className="flex">
-        <Word word={word}/>
-        <HintButton onClick={() => {setHintVisibility(!hintVisible)}}/>
+        <Word word={word} />
+        <HintButton
+          onClick={() => {
+            setHintVisibility(!hintVisible);
+          }}
+        />
       </div>
 
-      { hintVisible &&
-      <HintSentence word={word} >
-        {hintSentence}
-      </HintSentence>}
+      {hintVisible && <HintSentence word={word}>{hintSentence}</HintSentence>}
 
       <div className="content">
         <input type="text" id="word-input" />
@@ -34,7 +34,7 @@ const TranslateExcersice = ({language, word, hintSentence}: Props) => {
 
       <SubmitButton>Controleren</SubmitButton>
     </div>
-  )
-}
+  );
+};
 
-export default TranslateExcersice
+export default TranslateExcersice;
