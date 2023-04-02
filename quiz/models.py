@@ -85,6 +85,9 @@ class Wordlist(models.Model):
     def get_absolute_exersice_url(self):
         return reverse('wordlist-exercise', kwargs={"pk": self.pk})
 
+    def get_absolute_edit_url(self):
+        return reverse('wordlist-edit', kwargs={"pk": self.pk})
+
     def was_published_recently(self):
         return self.date_published >= timezone.now() - datetime.timedelta(days=1)
 

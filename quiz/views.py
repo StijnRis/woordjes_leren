@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.views import generic
 from rest_framework import viewsets
 from rest_framework import permissions
+from quiz.forms import EditWordlistForm
 from quiz.permissions import IsOwnerOrReadOnly
 from quiz.serializers import TranslationSerializer, UserSerializer, WordListSerializer, WordSerializer
 from quiz.models import Wordlist, Word, Translation, Language, Sentence
@@ -26,7 +27,19 @@ from rest_framework.reverse import reverse
 from rest_framework import viewsets
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
 
+def is_wordlist_owner(func):
+    def check_and_call(request, *args, **kwargs):
+        #user = request.user
+        #print user.id
+        pk = kwargs["pk"]
+        wordlist = Wordlist.objects.get(pk=pk)
+        if not (wordlist.owner == request.user): 
+            return HttpResponse("It is not yours ! You are not permitted !",
+                        content_type="application/json", status=403)
+        return func(request, *args, **kwargs)
+    return check_and_call
 
 def index(request):
     """View function for home page of site."""
@@ -109,25 +122,57 @@ class WordlistExerciseView(generic.DetailView):
     template_name = 'quiz/wordlist_exercise.html'
     context_object_name = 'wordlist'
 
+@login_required
+@is_wordlist_owner
+def edit_wordlist(request, pk):
+    """View function for editing a specific wordlist by the owner."""
+    wordlist = get_object_or_404(Wordlist, pk=pk)
 
-def answers(request, wordlist_id):
-    wordlist = get_object_or_404(Wordlist, pk=wordlist_id)
-    for material in wordlist.material_set.all():
-        try:
-            translation = material.translation
-            print(request.POST[f'translation_{translation.id}_choice'])
-            selected_word = Word.objects.all().get(
-                pk=request.POST[f'translation_{translation.id}_choice'])
-        except (KeyError, Word.DoesNotExist) as e:
-            messages.error(request, "You didn't select a choice.")
-            return HttpResponseRedirect(reverse('quiz:wordlist_exercise', args=(wordlist.id, )))
-        else:
-            if selected_word == translation.word_two:
-                translation.correct_tries += 1
-            else:
-                translation.wrong_tries += 1
-            translation.save()
-    return HttpResponseRedirect(reverse('quiz:wordlists'))
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = EditWordlistForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            wordlist.name = form.cleaned_data['name']
+            wordlist.save()
+
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse('wordlist-detail', kwargs={'pk': pk}))
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        proposed_name = 'a beatifull name'
+        form = EditWordlistForm(initial={'renewal_date': proposed_name})
+
+    context = {
+        'form': form,
+        'wordlist': wordlist,
+    }
+
+    return render(request, 'quiz/wordlist_edit.html', context)
+
+# def answers(request, wordlist_id):
+#     wordlist = get_object_or_404(Wordlist, pk=wordlist_id)
+#     for material in wordlist.material_set.all():
+#         try:
+#             translation = material.translation
+#             print(request.POST[f'translation_{translation.id}_choice'])
+#             selected_word = Word.objects.all().get(
+#                 pk=request.POST[f'translation_{translation.id}_choice'])
+#         except (KeyError, Word.DoesNotExist) as e:
+#             messages.error(request, "You didn't select a choice.")
+#             return HttpResponseRedirect(reverse('quiz:wordlist_exercise', args=(wordlist.id, )))
+#         else:
+#             if selected_word == translation.word_two:
+#                 translation.correct_tries += 1
+#             else:
+#                 translation.wrong_tries += 1
+#             translation.save()
+#     return HttpResponseRedirect(reverse('quiz:wordlists'))
 
 
 class WordViewSet(viewsets.ModelViewSet):
@@ -154,3 +199,4 @@ class TranslationViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
+

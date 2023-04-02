@@ -1,7 +1,7 @@
 '''
 To start (type in powershell):
 Set-ExecutionPolicy Unrestricted -Scope Process
-venv/Scripts/Activate.ps1
+.\/venv/Scripts/Activate.ps1
 python manage.py runserver
 
 Shell:

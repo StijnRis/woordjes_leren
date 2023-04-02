@@ -21,6 +21,7 @@
 <div>
     <h2>Actions</h2>
     <a href="{{wordlist.get_absolute_exersice_url}}">Exercise</a>
+    {% if perms.quiz.IsOwnerOrReadOnly %}- <a href="{{wordlist.get_absolute_edit_url}}">Edit</a>{% endif %}
 </div>
 
 {% endblock content %}
