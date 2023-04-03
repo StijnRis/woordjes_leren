@@ -1,7 +1,7 @@
 /* Maybe move to parent file? */
 :root {
-    --main: rgba(185,213,255,255);
-    --accent-dark: rgba(137,184,255,255);
+    --main: rgba(185, 213, 255, 255);
+    --accent-dark: rgba(137, 184, 255, 255);
 }
 
 body {
@@ -15,14 +15,16 @@ body {
     padding-top: 70px;
     font-family: 'Poppins', sans-serif;
 }
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 .header {
     height: 70px;
-    background-color: rgb(210,210,210);
+    background-color: rgb(210, 210, 210);
     position: fixed;
     top: 0;
     left: 0;
@@ -30,13 +32,15 @@ body {
     display: flex;
     padding: 20px;
 }
+
 .header a {
     text-decoration: none;
 }
+
 .exercise-container {
     min-width: 800px;
     min-height: 400px;
-    background-color: rgba(240,240,240,1);
+    background-color: rgba(240, 240, 240, 1);
     padding: 40px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
@@ -45,6 +49,7 @@ body {
     display: flex;
     justify-content: space-between;
 }
+
 input:focus {
     outline: none;
 }
@@ -58,10 +63,12 @@ input:focus {
     width: fit-content;
     margin-left: auto;
 }
+
 .button-submit:hover {
     margin-top: 2px;
     border-bottom: 1px solid var(--accent-dark);
 }
+
 .button-hint {
     width: 35px;
     height: 35px;
@@ -79,16 +86,20 @@ input:focus {
     display: flex;
     flex-direction: column;
 }
+
 .exercise #instruction {
     font-size: 1em;
 }
+
 .exercise #word {
     font-size: 2em;
     font-weight: 600;
 }
+
 .exercise #hint-sentence {
     padding-bottom: 20px;
 }
+
 .exercise .content {
     min-height: 150px;
     height: 100%;
