@@ -20,6 +20,7 @@ from rest_framework import routers
 from quiz import views
 from django.views.generic import RedirectView
 
+
 urlpatterns = [
     path('', RedirectView.as_view(url='quiz/')),
     path('quiz/', include('quiz.urls')),

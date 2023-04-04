@@ -2,6 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 from quiz.models import Language, Word, Translation, Wordlist
 
+
 class WordSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Word
@@ -11,11 +12,13 @@ class WordSerializer(serializers.HyperlinkedModelSerializer):
 class TranslationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Translation
-        fields = ['id', 'word_one', 'word_two', 'wrong_tries', 'correct_tries', 'difficulty']
+        fields = ['id', 'word', 'translation',
+                  'wrong_tries', 'correct_tries', 'difficulty']
 
 
 class WordListSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.HyperlinkedRelatedField(view_name='wordlist-detail', read_only=True)#ReadOnlyField(source='owner.username')
+    owner = serializers.HyperlinkedRelatedField(
+        view_name='wordlist-detail', read_only=True)  # ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Wordlist
@@ -23,7 +26,8 @@ class WordListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    wordlists = serializers.HyperlinkedRelatedField(view_name='user-detail', many=True, queryset=Wordlist.objects.all())
+    wordlists = serializers.HyperlinkedRelatedField(
+        view_name='user-detail', many=True, queryset=Wordlist.objects.all())
 
     class Meta:
         model = settings.AUTH_USER_MODEL
