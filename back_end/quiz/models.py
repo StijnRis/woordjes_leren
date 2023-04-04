@@ -4,8 +4,10 @@ from django.utils import timezone
 import datetime
 from django.db import models
 import random
-# python manage.py makemigrations
-# python manage.py migrate
+from django.utils.timezone import now
+
+# python back_end/manage.py makemigrations
+# python back_end/manage.py migrate
 
 
 class Language(models.Model):
@@ -56,7 +58,8 @@ class Translation(models.Model):
     def __str__(self):
         percentage = "-"
         if self.correct_tries > 0:
-            percentage = str(round(self.correct_tries / (self.correct_tries + self.wrong_tries) * 100)) + '%'
+            percentage = str(
+                round(self.correct_tries / (self.correct_tries + self.wrong_tries) * 100)) + '%'
         return f'{self.word} -> {self.translation}  ({percentage})'
 
 
@@ -64,8 +67,7 @@ class Wordlist(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='wordlists', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
-    date_published = models.DateTimeField('date published', auto_now_add=True)
-    translations = models.ManyToManyField(Translation, help_text='The translations in this word list.')
+    date_published = models.DateTimeField('date published', default=now)
 
     VISIBILITY_STATUS = (
         ('pr', 'Private'),
@@ -81,7 +83,7 @@ class Wordlist(models.Model):
 
     def get_absolute_url(self):
         return reverse('wordlist-detail', kwargs={"pk": self.pk})
-    
+
     def get_absolute_exersice_url(self):
         return reverse('wordlist-exercise', kwargs={"pk": self.pk})
 
@@ -93,3 +95,14 @@ class Wordlist(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class Material(models.Model):
+    wordlist = models.ForeignKey(
+        Wordlist, on_delete=models.CASCADE, related_name='materials')
+    translation = models.ForeignKey(
+        Translation, on_delete=models.CASCADE, related_name='materials')
+    date_added = models.DateTimeField(default=now)
+
+    def __str__(self) -> str:
+        return f'{self.wordlist} -> {self.translation}'

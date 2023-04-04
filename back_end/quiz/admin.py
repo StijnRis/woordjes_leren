@@ -1,12 +1,23 @@
 from django.contrib import admin
 from django.apps import apps
 
-from .models import Wordlist, Word, Translation, Language, Sentence
+from .models import Wordlist, Word, Translation, Language, Sentence, Material
+
+
+@admin.register(Material)
+class MaterialAdmin(admin.ModelAdmin):
+    list_display = ('wordlist', 'translation')
+
+
+class MaterialInline(admin.TabularInline):
+    model = Material
+    extra = 0
 
 
 @admin.register(Wordlist)
 class WordlistAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'visibility')
+    inlines = (MaterialInline, )
     list_filter = ('visibility', 'owner')
 
 

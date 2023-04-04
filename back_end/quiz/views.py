@@ -9,10 +9,11 @@ from django.contrib import messages
 from django.views import generic
 from rest_framework import viewsets
 from rest_framework import permissions
+from quiz.serializers import LanguageSerializer, SentenceSerializer
 from quiz.forms import EditWordlistForm
 from quiz.permissions import IsOwnerOrReadOnly
-from quiz.serializers import TranslationSerializer, UserSerializer, WordListSerializer, WordSerializer
-from quiz.models import Wordlist, Word, Translation, Language, Sentence
+from quiz.serializers import TranslationSerializer, WordListSerializer, WordSerializer, MaterialSerializer
+from quiz.models import Wordlist, Word, Translation, Language, Sentence, Material
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -29,17 +30,19 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
 
+
 def is_wordlist_owner(func):
     def check_and_call(request, *args, **kwargs):
-        #user = request.user
-        #print user.id
+        # user = request.user
+        # print user.id
         pk = kwargs["pk"]
         wordlist = Wordlist.objects.get(pk=pk)
-        if not (wordlist.owner == request.user): 
+        if not (wordlist.owner == request.user):
             return HttpResponse("It is not yours ! You are not permitted !",
-                        content_type="application/json", status=403)
+                                content_type="application/json", status=403)
         return func(request, *args, **kwargs)
     return check_and_call
+
 
 def index(request):
     """View function for home page of site."""
@@ -48,7 +51,8 @@ def index(request):
     num_languages = Language.objects.all().count()
     num_words = Word.objects.all().count()
     num_translations = Translation.objects.count()
-    num_practiced_translations = Translation.objects.filter(wrong_tries__gt=0, correct_tries__gt=0).count()
+    num_practiced_translations = Translation.objects.filter(
+        wrong_tries__gt=0, correct_tries__gt=0).count()
 
     # Number of visits to this view, as counted in the session variable.
     num_visits = request.session.get('num_visits', 0) + 1
@@ -80,7 +84,7 @@ class LanguageDetailView(generic.DetailView):
     model = Language
     template_name = 'quiz/language_detail.html'
     context_object_name = 'language'
-    
+
 
 class WordlistListView(generic.ListView):
     model = Wordlist
@@ -98,7 +102,8 @@ class WordlistListView(generic.ListView):
         context['some_data'] = 'This is just some data'
         return context
 
-class WordlistFromUserListView(LoginRequiredMixin,generic.ListView):
+
+class WordlistFromUserListView(LoginRequiredMixin, generic.ListView):
     """Generic class-based view listing the wordlists the current user owns."""
     model = Wordlist
     template_name = 'quiz/wordlist_personal_list.html'
@@ -111,6 +116,7 @@ class WordlistFromUserListView(LoginRequiredMixin,generic.ListView):
             .order_by('name')
         )
 
+
 class WordlistDetailView(generic.DetailView):
     model = Wordlist
     template_name = 'quiz/wordlist_detail.html'
@@ -121,6 +127,7 @@ class WordlistExerciseView(generic.DetailView):
     model = Wordlist
     template_name = 'quiz/wordlist_exercise.html'
     context_object_name = 'wordlist'
+
 
 @login_required
 @is_wordlist_owner
@@ -174,6 +181,20 @@ def edit_wordlist(request, pk):
 #             translation.save()
 #     return HttpResponseRedirect(reverse('quiz:wordlists'))
 
+# API vieuws
+
+
+class LanguageViewSet(viewsets.ModelViewSet):
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class SentenceViewSet(viewsets.ModelViewSet):
+    queryset = Sentence.objects.all()
+    serializer_class = SentenceSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 class WordViewSet(viewsets.ModelViewSet):
     queryset = Word.objects.all()
@@ -184,7 +205,8 @@ class WordViewSet(viewsets.ModelViewSet):
 class WordListViewSet(viewsets.ModelViewSet):
     queryset = Wordlist.objects.all()
     serializer_class = WordListSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -196,7 +218,7 @@ class TranslationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-
+class MaterialViewSet(viewsets.ModelViewSet):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

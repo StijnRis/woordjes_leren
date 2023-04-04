@@ -1,12 +1,24 @@
 from django.conf import settings
 from rest_framework import serializers
-from quiz.models import Language, Word, Translation, Wordlist
+from quiz.models import Language, Word, Translation, Wordlist, Sentence, Material
+
+
+class LanguageSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Language
+        fields = ['name']
+
+
+class SentenceSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Sentence
+        fields = ['sentence', 'language']
 
 
 class WordSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Word
-        fields = ['name']
+        fields = ['name', 'language', 'usage']
 
 
 class TranslationSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,18 +29,17 @@ class TranslationSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class WordListSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.HyperlinkedRelatedField(
-        view_name='wordlist-detail', read_only=True)  # ReadOnlyField(source='owner.username')
+    # owner = serializers.HyperlinkedRelatedField(
+    #     view_name='wordlist-detail', read_only=True)  # ReadOnlyField(source='owner.username')
+    materials = serializers.HyperlinkedRelatedField(
+        view_name='material-detail', many=True, queryset=Sentence.objects.all())
 
     class Meta:
         model = Wordlist
-        fields = ['owner', 'name', 'published_date', 'translations']
+        fields = ['owner', 'name', 'date_published', 'materials']
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    wordlists = serializers.HyperlinkedRelatedField(
-        view_name='user-detail', many=True, queryset=Wordlist.objects.all())
-
+class MaterialSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = settings.AUTH_USER_MODEL
-        fields = ['id', 'username', 'wordlists']
+        model = Material
+        fields = ['wordlist', 'translation', 'date_added']
