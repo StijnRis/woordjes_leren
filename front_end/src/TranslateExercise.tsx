@@ -10,7 +10,7 @@ interface Props {
   hintSentence: string;
 }
 
-const TranslateExcersice = ({ language, word, hintSentence }: Props) => {
+const TranslateExercise = ({ language, word, hintSentence }: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
 
   return (
@@ -37,4 +37,4 @@ const TranslateExcersice = ({ language, word, hintSentence }: Props) => {
   );
 };
 
-export default TranslateExcersice;
+export default TranslateExercise;

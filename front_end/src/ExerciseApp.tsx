@@ -1,14 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
-import TranslateExcersice from "./TranslateExcersice";
+import TranslateExercise from "./TranslateExercise";
 
 const ExerciseApp = () => {
+
+  const [exerciseData, setExerciseData] = useState([]);
+
+  interface exercise {
+    name: string,
+    language: string,
+    usage: Array<string>
+  }
+  const [currentExercise, setCurrentExercise] = useState([]);
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/quiz/api/words', { mode: 'no-cors' })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      setExerciseData(data);
+      setCurrentExercise(data["results"][0]);
+    })
+    .catch((err) => console.log(err.message));
+  }, []);
+
+
   return (
     <>
       <Header></Header>
       <div className="exercise-container">
-        <TranslateExcersice
-          language="Nederlands"
+        <TranslateExercise
+          language="Frans"
           word="Bonjour"
           hintSentence="Salut, ça va? Moi je m’appelle Stéphane. Bonjour Stéphane, moi c’est Nicolas."
         />
