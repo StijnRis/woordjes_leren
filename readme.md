@@ -4,7 +4,7 @@ Python version 3.11.2
 
 ## Install
 
-pip install -r requirements.txt
+pip install -r back_end/requirements.txt
 
 ## Start
 
@@ -24,6 +24,5 @@ npm install or npm i
 
 ## Start
 
-1. Open terminal
-2. cd front_end
-3. npm run dev
+cd front_end
+npm run dev
