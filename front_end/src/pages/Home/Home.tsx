@@ -1,10 +1,10 @@
-import Wordlist from "../../components/Wordlists";
+import AllWordlists from "../../components/wordlist/AllWordlists";
 
 const Home = () => {
   return (
     <div>
       <h1>Welkom!</h1>
-      <Wordlist></Wordlist>
+      <AllWordlists></AllWordlists>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import NewWordlist from "./pages/NewWordlist/NewWordList";
 import Exercise from "./pages/Exersice/Exercise";
-import Navigation from "./components/layout/navigation";
+import Navigation from "./components/layout/Navigation";
 
 const App = () => {
   return (

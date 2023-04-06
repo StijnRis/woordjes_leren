@@ -1,11 +1,12 @@
 import { useState } from "react";
-import ModalDelete from "./ModalDelete";
+import ModalDelete from "../ModalDelete";
 
 interface Props {
   title: string;
+  progress: number;
 }
 
-function Wordlist({ title }: Props) {
+function Wordlist({ title, progress }: Props) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   function handleDelete() {
@@ -20,6 +21,7 @@ function Wordlist({ title }: Props) {
     setModalIsOpen(false);
   }
 
+  var progressPercentage = progress * 100;
   return (
     <>
       <div className="col-sm-6 mb-3 mb-sm-0">
@@ -27,7 +29,20 @@ function Wordlist({ title }: Props) {
           <div className="card-header">Recent geoefend</div>
           <div className="card-body">
             <h5 className="card-title">{title}</h5>
-            <p className="card-text">50% goed.</p>
+            <div
+              className="progress"
+              role="progressbar"
+              aria-label="Basic example"
+              aria-valuenow={0}
+              aria-valuemin={0}
+              aria-valuemax={1}
+            >
+              <div
+                className="progress-bar"
+                style={{ width: progressPercentage + "%" }}
+              ></div>
+            </div>
+            <p className="card-text">{progressPercentage}% goed.</p>
             <button type="button" className="btn btn-primary">
               Oefenen
             </button>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import TranslateExercise from "../../components/TranslateExercise";
-import "./exercise.css";
+// import "./exercise.css";
 
 const Exercise = () => {
   const [exerciseData, setExerciseData] = useState([]);
