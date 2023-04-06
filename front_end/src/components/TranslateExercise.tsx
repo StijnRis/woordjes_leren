@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Word from "./components/Word";
-import HintButton from "./components/HintButton";
-import HintSentence from "./components/HintSentence";
-import SubmitButton from "./components/SubmitButton";
+import Word from "./Word";
+import HintButton from "./HintButton";
+import HintSentence from "./HintSentence";
+import SubmitButton from "./SubmitButton";
 
 interface Props {
   language: string;
