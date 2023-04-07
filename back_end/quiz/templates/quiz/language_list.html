@@ -1,18 +1,12 @@
-{% extends 'quiz/base_generic.html' %}
-
-{% block title %}
-Alle talen
-{% endblock %}
-
-{% block content %}
-    <h1>Alle talen</h1>
-    {% if languages %}
-        <ul>
-        {% for language in languages %}
-            <li><a href="{{ language.get_absolute_url }}">{{ language.name }}</a></li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>Geen talen beschikbaar</p>
-    {% endif %}
-{% endblock content %}
+{% extends 'quiz/base_generic.html' %} {% block title %} Alle talen {% endblock
+%} {% block content %}
+<h1>Alle talen</h1>
+{% if languages %}
+<ul>
+  {% for language in languages %}
+  <li><a href="{{ language.get_absolute_url }}">{{ language.name }}</a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Geen talen beschikbaar</p>
+{% endif %} {% endblock content %}
