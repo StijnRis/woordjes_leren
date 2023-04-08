@@ -1,19 +1,18 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import NewWordlist from "./pages/NewWordlist/NewWordList";
-import Exercise from "./pages/Exersice/Exercise";
-import Navigation from "./components/layout/Navigation";
+import HomePage from "./pages/Home/HomePage";
+import NewWordlistPage from "./pages/NewWordlist/NewWordListPage";
+import ExercisePage from "./pages/Exersice/ExercisePage";
+import Layout from "./components/layout/Layout";
 
 const App = () => {
   return (
-    <div>
-      <Navigation></Navigation>
+    <Layout>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/new-wordlist" element={<NewWordlist />} />
-        <Route path="/exercise" element={<Exercise />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/new-wordlist" element={<NewWordlistPage />} />
+        <Route path="/exercise" element={<ExercisePage />} />
       </Routes>
-    </div>
+    </Layout>
   );
 };
 

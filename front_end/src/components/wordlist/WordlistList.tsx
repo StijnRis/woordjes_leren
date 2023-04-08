@@ -14,11 +14,13 @@ function WordlistsList({ wordlists }: Props) {
     <div className="row">
       {wordlists.map((wordlist) => {
         return (
-          <Wordlist
-            key={wordlist.id}
-            progress={wordlist.progress}
-            title={wordlist.name}
-          ></Wordlist>
+          <div className="col-sm-6 mb-3 mb-sm-0">
+            <Wordlist
+              key={wordlist.id}
+              progress={wordlist.progress}
+              title={wordlist.name}
+            ></Wordlist>
+          </div>
         );
       })}
     </div>

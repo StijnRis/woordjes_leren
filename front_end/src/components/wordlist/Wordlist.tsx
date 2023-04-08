@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ModalDelete from "../ModalDelete";
+import Card from "../ui/Card";
 
 interface Props {
   title: string;
@@ -24,7 +25,7 @@ function Wordlist({ title, progress }: Props) {
   var progressPercentage = progress * 100;
   return (
     <>
-      <div className="col-sm-6 mb-3 mb-sm-0">
+      <Card>
         <div className="card">
           <div className="card-header">Recent geoefend</div>
           <div className="card-body">
@@ -58,7 +59,7 @@ function Wordlist({ title, progress }: Props) {
             </button>
           </div>
         </div>
-      </div>
+      </Card>
       {modalIsOpen && (
         <ModalDelete
           onCancel={handleCancelDelete}

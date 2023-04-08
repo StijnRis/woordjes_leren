@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import TranslateExercise from "../../components/TranslateExercise";
 // import "./exercise.css";
 
-const Exercise = () => {
+const ExercisePage = () => {
   const [exerciseData, setExerciseData] = useState([]);
 
   interface exercise {
@@ -38,4 +38,4 @@ const Exercise = () => {
   );
 };
 
-export default Exercise;
+export default ExercisePage;

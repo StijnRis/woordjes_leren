@@ -1,6 +1,6 @@
 import AllWordlists from "../../components/wordlist/AllWordlists";
 
-const Home = () => {
+const HomePage = () => {
   return (
     <div>
       <h1>Welkom!</h1>
@@ -8,4 +8,4 @@ const Home = () => {
     </div>
   );
 };
-export default Home;
+export default HomePage;
