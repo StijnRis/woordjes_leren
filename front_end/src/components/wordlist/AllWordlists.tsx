@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import WordlistList from "./WordlistList";
 
 const DUMMY_DATA = [
@@ -116,10 +117,23 @@ const DUMMY_DATA = [
 ];
 
 function AllWordlists() {
+  let [wordlists, setWordlists] = useState([]);
+
+  useEffect(() => {
+    getNotes();
+  }, []);
+
+  let getNotes = async () => {
+    let response = await fetch("http://127.0.0.1:8000/quiz/api/wordlists/"); // PROXY doesnt work for some reason
+    let data = await response.json();
+    console.log("Data:", data);
+    setWordlists(data["results"]);
+  };
+
   return (
     <section>
       <h2>Alle woordenlijsten</h2>
-      <WordlistList wordlists={DUMMY_DATA}></WordlistList>
+      <WordlistList wordlists={wordlists}></WordlistList>
     </section>
   );
 }

@@ -5,15 +5,34 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Django",
+            "name": "Start Django",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}\\manage.py",
+            "program": "${workspaceFolder}\\back_end\\manage.py",
             "args": [
                 "runserver"
             ],
             "django": true,
             "justMyCode": true
+        },
+        {
+            "command": "npm run dev --prefix front_end",
+            "name": "Start React",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}/front_end"
+        },
+    ],
+    "compounds": [
+        {
+            "name": "Start Project",
+            "configurations": ["Start Django", "Start React", "Launch Chrome"]
         }
     ]
 }

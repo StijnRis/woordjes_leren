@@ -26,3 +26,5 @@ npm install or npm i
 
 cd front_end
 npm run dev
+
+npm run dev --prefix front_end

@@ -7,6 +7,7 @@ from rest_framework.routers import DefaultRouter
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet, basename="userprofile")
+router.register(r'group', views.GroupViewSet, basename="group")
 
 # app_name = 'quiz'
 urlpatterns = [

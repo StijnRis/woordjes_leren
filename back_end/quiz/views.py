@@ -1,34 +1,19 @@
-from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.template import loader
-from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib import messages
 from django.views import generic
-from rest_framework import viewsets
-from rest_framework import permissions
 from quiz.serializers import LanguageSerializer, SentenceSerializer
 from quiz.forms import EditWordlistForm
 from quiz.permissions import IsOwnerOrReadOnly
 from quiz.serializers import TranslationSerializer, WordListSerializer, WordSerializer, MaterialSerializer
 from quiz.models import Wordlist, Word, Translation, Language, Sentence, Material
-from rest_framework.parsers import JSONParser
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import mixins
-from rest_framework import generics
-from rest_framework import generics
+from django.http import HttpResponse
 from rest_framework.reverse import reverse
 from rest_framework import viewsets
-from django.contrib.auth import get_user_model
+from rest_framework import viewsets, permissions
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 
 
 def is_wordlist_owner(func):
