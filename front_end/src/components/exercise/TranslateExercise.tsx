@@ -3,24 +3,32 @@ import Word from "./Word";
 import HintButton from "../ui/buttons/HintButton";
 import HintSentence from "./HintSentence";
 import SubmitButton from "../ui/buttons/SubmitButton";
-import classes from "./TranslateExercise.module.css";
-import main_classes from "../../pages/Exersice/ExercisePage.module.css";
+import style from "./TranslateExercise.module.css";
+import exercise_style from "../../pages/Exersice/ExercisePage.module.css";
 
 interface Props {
   language: string;
   word: string;
   hintSentence: string;
+  exerciseHandler: Function
 }
 
-const TranslateExercise = ({ language, word, hintSentence }: Props) => {
+const TranslateExercise = ({ language, word, hintSentence, exerciseHandler }: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
 
-  return (
-    <div className={main_classes.exercise + " " + classes.translate}>
-      <span id="instruction">Vertaal naar het {language}</span>
+  //Check value
+  const validateAnswer = (answer: string) => {
+    const result = true;
+    exerciseHandler(result);
+    return result;
+  }
 
-      <div className="flex">
-        <Word word={word} />
+  return (
+    <div className={exercise_style.exercise + " " + style.translate}>
+      <span id={exercise_style.instruction}>Vertaal naar het {language}</span>
+
+      <div className={exercise_style.flex}>
+        <span id={exercise_style.word}>{word}</span>
         <HintButton
           onClick={() => {
             setHintVisibility(!hintVisible);
@@ -30,11 +38,11 @@ const TranslateExercise = ({ language, word, hintSentence }: Props) => {
 
       {hintVisible && <HintSentence word={word}>{hintSentence}</HintSentence>}
 
-      <div className="content">
-        <input type="text" id="word-input" />
+      <div className={exercise_style.content}>
+        <input type="text" id={style.word_input} />
       </div>
 
-      <SubmitButton>Controleren</SubmitButton>
+      <SubmitButton clickHandler={validateAnswer}>Controleren</SubmitButton>
     </div>
   );
 };

@@ -1,6 +1,4 @@
-.translate {}
-
-.translate #word-input {
+.translate #word_input {
     width: 100%;
     padding: 10px 5px;
     font-size: 1.2em;

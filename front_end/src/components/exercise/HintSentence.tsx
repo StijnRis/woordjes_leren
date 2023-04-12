@@ -8,22 +8,18 @@ interface Props {
 const HintSentence = ({ word, children }: Props) => {
   //Children is the hint sentence
   const wordIndex = children.toLowerCase().indexOf(word.toLowerCase());
+  var hintSentence;
   if (wordIndex == -1) {
-    throw new Error(
-      "Word " + word + " is not found in the hint sentence: " + children
-    );
+    hintSentence = children;
+  } else {
+    const wordInSentence = children.substring(wordIndex, wordIndex + word.length);
+    const sentenceParts = children.split(wordInSentence);
+
+    hintSentence = <>{sentenceParts[0]}<strong>{wordInSentence}</strong>{sentenceParts[1]}</>
   }
-
-  const wordInSentence = children.substring(wordIndex, wordIndex + word.length);
-  const sentenceParts = children.split(wordInSentence);
-
-  console.log(wordIndex, word, wordInSentence);
-
   return (
     <div id="hint-sentence">
-      "{sentenceParts[0]}
-      <strong>{wordInSentence}</strong>
-      {sentenceParts[1]}"
+      "{hintSentence}"
     </div>
   );
 };

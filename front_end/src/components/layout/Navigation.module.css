@@ -1,5 +1,8 @@
 .header {
     color: red;
 }
-
+nav {
+    position: fixed!important;
+    width: 100%;
+}
 .url {}
