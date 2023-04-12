@@ -37,7 +37,7 @@ body {
     text-decoration: none;
 }
 
-.exercise-container {
+.exercise_container {
     min-width: 800px;
     min-height: 400px;
     background-color: rgba(240, 240, 240, 1);
@@ -55,31 +55,6 @@ input:focus {
 }
 
 /* Button */
-.button-submit {
-    padding: 5px 20px;
-    background-color: var(--main);
-    border-bottom: 3px solid var(--accent-dark);
-    transition: .1s ease;
-    width: fit-content;
-    margin-left: auto;
-}
-
-.button-submit:hover {
-    margin-top: 2px;
-    border-bottom: 1px solid var(--accent-dark);
-}
-
-.button-hint {
-    width: 35px;
-    height: 35px;
-    background-color: var(--main);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
-
 /* Exercise general */
 .exercise {
     height: 100%;
@@ -106,10 +81,3 @@ input:focus {
 }
 
 /* Exercise types */
-.translate #word-input {
-    width: 100%;
-    padding: 10px 5px;
-    font-size: 1.2em;
-    border: none;
-    border-bottom: 3px solid rgb(202, 221, 255)
-}

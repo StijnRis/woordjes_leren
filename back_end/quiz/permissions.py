@@ -1,16 +1,21 @@
 from rest_framework import permissions
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsOwner(permissions.BasePermission):
     """
     Only allow owners of an object to edit it.
     """
 
     def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        # Write permissions are only allowed to the owner of the snippet.
         return obj.owner == request.user
+
+
+class IsPublicReadOnly(permissions.BasePermission):
+    """
+    Allow reading when object in public.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if obj.visibility == 'pl' and request.method in permissions.SAFE_METHODS:
+            return True
+        return False

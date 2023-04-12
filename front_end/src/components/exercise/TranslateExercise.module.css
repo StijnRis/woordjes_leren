@@ -1,0 +1,9 @@
+.translate {}
+
+.translate #word-input {
+    width: 100%;
+    padding: 10px 5px;
+    font-size: 1.2em;
+    border: none;
+    border-bottom: 3px solid rgb(202, 221, 255)
+}

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Word from "./Word";
-import HintButton from "./HintButton";
+import HintButton from "../ui/buttons/HintButton";
 import HintSentence from "./HintSentence";
-import SubmitButton from "./SubmitButton";
+import SubmitButton from "../ui/buttons/SubmitButton";
 import classes from "./TranslateExercise.module.css";
+import main_classes from "../../pages/Exersice/ExercisePage.module.css";
 
 interface Props {
   language: string;
@@ -15,7 +16,7 @@ const TranslateExercise = ({ language, word, hintSentence }: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
 
   return (
-    <div className="exercise translate">
+    <div className={main_classes.exercise + " " + classes.translate}>
       <span id="instruction">Vertaal naar het {language}</span>
 
       <div className="flex">

@@ -4,13 +4,19 @@ from accounts.models import UserProfile
 from django.contrib.auth.models import Group
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    # wordlists = serializers.HyperlinkedRelatedField(
-    #     view_name='user-detail', many=True, queryset=Wordlist.objects.all())
+class BasicUserProfileSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['pk', 'username']
+        read_only_fields = ['pk', 'username']
+
+
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'username', 'groups']
+        fields = ['pk', 'username', 'groups']
+        read_only_fields = ['pk', 'username', 'groups']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):

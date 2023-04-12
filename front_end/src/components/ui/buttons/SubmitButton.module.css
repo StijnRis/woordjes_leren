@@ -1,0 +1,13 @@
+.button_submit {
+    padding: 5px 20px;
+    background-color: var(--main);
+    border-bottom: 3px solid var(--accent-dark);
+    transition: .1s ease;
+    width: fit-content;
+    margin-left: auto;
+}
+
+.button_submit:hover {
+    margin-top: 2px;
+    border-bottom: 1px solid var(--accent-dark);
+}

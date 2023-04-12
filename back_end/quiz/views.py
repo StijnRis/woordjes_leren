@@ -3,14 +3,12 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
-from quiz.serializers import LanguageSerializer, SentenceSerializer
 from quiz.forms import EditWordlistForm
-from quiz.permissions import IsOwnerOrReadOnly
-from quiz.serializers import TranslationSerializer, WordListSerializer, WordSerializer, MaterialSerializer
+from quiz import permissions as customPermissions
+from quiz import serializers
 from quiz.models import Wordlist, Word, Translation, Language, Sentence, Material
 from django.http import HttpResponse
 from rest_framework.reverse import reverse
-from rest_framework import viewsets
 from rest_framework import viewsets, permissions
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -166,44 +164,53 @@ def edit_wordlist(request, pk):
 #             translation.save()
 #     return HttpResponseRedirect(reverse('quiz:wordlists'))
 
-# API vieuws
+
+'''
+API vieuws start from here
+'''
 
 
 class LanguageViewSet(viewsets.ModelViewSet):
     queryset = Language.objects.all()
-    serializer_class = LanguageSerializer
+    serializer_class = serializers.LanguageSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class SentenceViewSet(viewsets.ModelViewSet):
     queryset = Sentence.objects.all()
-    serializer_class = SentenceSerializer
+    serializer_class = serializers.SentenceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class WordViewSet(viewsets.ModelViewSet):
     queryset = Word.objects.all()
-    serializer_class = WordSerializer
+    serializer_class = serializers.WordSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class WordListViewSet(viewsets.ModelViewSet):
     queryset = Wordlist.objects.all()
-    serializer_class = WordListSerializer
+    serializer_class = serializers.WordListSerializer
     permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+        permissions.IsAuthenticated, customPermissions.IsOwner | customPermissions.IsPublicReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    def get_serializer_class(self):
+        print(self.action)
+        if self.action == 'list':
+            return serializers.BasicWordListSerializer
+        return serializers.WordListSerializer
+
 
 class TranslationViewSet(viewsets.ModelViewSet):
     queryset = Translation.objects.all()
-    serializer_class = TranslationSerializer
+    serializer_class = serializers.TranslationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
-    serializer_class = MaterialSerializer
+    serializer_class = serializers.MaterialSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

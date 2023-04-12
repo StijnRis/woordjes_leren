@@ -1,0 +1,10 @@
+.button_hint {
+    width: 35px;
+    height: 35px;
+    background-color: var(--main);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
-import TranslateExercise from "../../components/TranslateExercise";
-// import "./exercise.css";
+import TranslateExercise from "../../components/exercise/TranslateExercise";
+import classes from "./ExercisePage.module.css";
 
 const ExercisePage = () => {
   const [exerciseData, setExerciseData] = useState([]);
@@ -27,11 +27,11 @@ const ExercisePage = () => {
   return (
     <>
       <Header></Header>
-      <div className="exercise-container">
+      <div className={classes.exercise_container}>
         <TranslateExercise
           language="Frans"
           word="Bonjour"
-          hintSentence="Salut, ça va? Moi je m’appelle Stéphane. Bonjour Stéphane, moi c’est Nicolas."
+          hintSentence="Salut, ça va? Moi je m'appelle Stéphane. Bonjour Stéphane, moi c'est Nicolas."
         />
       </div>
     </>
