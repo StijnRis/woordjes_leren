@@ -18,7 +18,7 @@ class SentenceSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = ['pk', 'sentence', 'language']
 
 
-class WordSentenceSerializer(serializers.HyperlinkedModelSerializer):
+class BasicSentenceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Sentence
         fields = ['pk', 'sentence']
@@ -26,7 +26,7 @@ class WordSentenceSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class WordSerializer(serializers.HyperlinkedModelSerializer):
-    usage = WordSentenceSerializer(many=True)
+    usage = BasicSentenceSerializer(many=True)
     language = LanguageSerializer()
 
     class Meta:
@@ -73,7 +73,8 @@ class BasicWordListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class WordListSerializer(serializers.HyperlinkedModelSerializer):
-    materials = MaterialWordlistSerializer(many=True)
+    materials = MaterialWordlistSerializer(
+        source='material_set', read_only=True, many=True)
     owner = BasicUserProfileSerializer()
 
     class Meta:

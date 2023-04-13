@@ -96,7 +96,7 @@ class Wordlist(models.Model):
     visibility = models.CharField(
         max_length=2,
         choices=VISIBILITY_STATUS,
-        default='pr',
+        default='pl',
         help_text='Visibily status',
     )
 

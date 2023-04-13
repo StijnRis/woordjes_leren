@@ -10,6 +10,7 @@ python back_end/manage.py import_scv_file SSL_woordenlijst_engels C:\\Users\\sti
 '''
 
 
+
 def dir_path(string):
     if os.path.isfile(string):
         return string
@@ -28,7 +29,7 @@ class Command(BaseCommand):
         parser.add_argument('to_language', type=str)
 
     def handle(self, *args, **options):
-        name = options['name']
+        name = options['name'] 
         url = options['url']
         source = Source.objects.get_or_create(name=name, url=url)[0]
 
