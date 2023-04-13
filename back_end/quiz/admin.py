@@ -1,7 +1,13 @@
 from django.contrib import admin
 from django.apps import apps
 
-from .models import Wordlist, Word, Translation, Language, Sentence, Material
+from .models import Wordlist, Word, Translation, Language, Sentence, Material, Source
+
+
+@admin.register(Source)
+class SourceAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+    readonly_fields = ('pk',)
 
 
 @admin.register(Material)

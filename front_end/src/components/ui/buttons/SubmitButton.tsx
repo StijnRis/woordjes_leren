@@ -7,7 +7,11 @@ interface Props {
 }
 
 const SubmitButton = ({ children, clickHandler }: Props) => {
-  return <div className={classes.button_submit} onClick={clickHandler()}>{children}</div>;
+  return (
+    <div className={classes.button_submit} onClick={clickHandler}>
+      {children}
+    </div>
+  );
 };
 
 export default SubmitButton;

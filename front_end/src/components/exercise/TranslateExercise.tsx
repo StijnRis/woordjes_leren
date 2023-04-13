@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Word from "./Word";
 import HintButton from "../ui/buttons/HintButton";
 import HintSentence from "./HintSentence";
@@ -9,19 +9,37 @@ import exercise_style from "../../pages/Exersice/ExercisePage.module.css";
 interface Props {
   language: string;
   word: string;
+  translation: string;
   hintSentence: string;
-  exerciseHandler: Function
+  exerciseHandler: Function;
 }
 
-const TranslateExercise = ({ language, word, hintSentence, exerciseHandler }: Props) => {
+const TranslateExercise = ({
+  language,
+  word,
+  translation,
+  hintSentence,
+  exerciseHandler,
+}: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
+  const inputRef = useRef(null);
 
   //Check value
-  const validateAnswer = (answer: string) => {
-    const result = true;
+  const validateAnswer = () => {
+    var answer = inputRef.current.value;
+    var result = answer == translation;
     exerciseHandler(result);
-    return result;
-  }
+
+    //Empty field
+    inputRef.current.value = "";
+  };
+
+  //Handle keyboard inputs
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === "Enter") {
+      validateAnswer();
+    }
+  };
 
   return (
     <div className={exercise_style.exercise + " " + style.translate}>
@@ -39,7 +57,12 @@ const TranslateExercise = ({ language, word, hintSentence, exerciseHandler }: Pr
       {hintVisible && <HintSentence word={word}>{hintSentence}</HintSentence>}
 
       <div className={exercise_style.content}>
-        <input type="text" id={style.word_input} />
+        <input
+          type="text"
+          id={style.word_input}
+          ref={inputRef}
+          onKeyPress={handleKeyPress}
+        />
       </div>
 
       <SubmitButton clickHandler={validateAnswer}>Controleren</SubmitButton>

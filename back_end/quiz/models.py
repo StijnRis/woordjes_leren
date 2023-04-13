@@ -10,6 +10,15 @@ from django.utils.timezone import now
 # python back_end/manage.py migrate
 
 
+class Source(models.Model):
+    name = models.CharField(max_length=100)
+    url = models.URLField(blank=True)
+
+
+# class Citation(models.Model):
+#     pass
+
+
 class Language(models.Model):
     name = models.CharField(
         max_length=200, help_text='The name of the language')
@@ -24,6 +33,7 @@ class Language(models.Model):
 class Sentence(models.Model):
     sentence = models.CharField(max_length=1000)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.RESTRICT)
 
     def __str__(self):
         return f'{self.sentence}'
@@ -33,8 +43,11 @@ class Word(models.Model):
     name = models.CharField(
         max_length=200, help_text='How the word is spelled')
     language = models.ForeignKey(
-        Language, on_delete=models.SET_NULL, help_text='The language of this word', null=True)
+        Language, on_delete=models.RESTRICT, help_text='The language of this word', null=True)
     usage = models.ManyToManyField(Sentence, blank=True)
+
+    class Meta:
+        unique_together = ('name', 'language',)
 
     def __str__(self):
         return f'{self.name}'
@@ -48,6 +61,10 @@ class Translation(models.Model):
     wrong_tries = models.IntegerField(default=0)
     correct_tries = models.IntegerField(default=0)
     difficulty = models.FloatField()
+    source = models.ForeignKey(Source, on_delete=models.RESTRICT)
+
+    class Meta:
+        unique_together = ('word', 'translation',)
 
     def get_options(self):
         words = list(Word.objects.all())
@@ -101,7 +118,7 @@ class Material(models.Model):
     wordlist = models.ForeignKey(
         Wordlist, on_delete=models.CASCADE, related_name='materials')
     translation = models.ForeignKey(
-        Translation, on_delete=models.CASCADE, related_name='materials')
+        Translation, on_delete=models.RESTRICT, related_name='materials')
     date_added = models.DateTimeField(default=now)
 
     def __str__(self) -> str:
