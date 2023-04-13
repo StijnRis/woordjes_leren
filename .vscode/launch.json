@@ -16,6 +16,15 @@
             "justMyCode": true
         },
         {
+            "name": "Django MGMT Command",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/back_end/manage.py",
+            "args": [
+                "${fileBasenameNoExtension}"
+            ]
+        },
+        {
             "command": "npm run dev --prefix front_end",
             "name": "Start React",
             "request": "launch",

@@ -42,9 +42,9 @@ class TranslationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Translation
         fields = ['pk', 'wrong_tries', 'correct_tries',
-                  'difficulty', 'word', 'translation',]
+                  'word', 'translation',]
         read_only_fields = ['pk', 'word', 'translation',
-                            'wrong_tries', 'correct_tries', 'difficulty']
+                            'wrong_tries', 'correct_tries']
 
 
 class MaterialSerializer(serializers.HyperlinkedModelSerializer):

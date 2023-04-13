@@ -5,23 +5,21 @@ import datetime
 from django.db import models
 import random
 from django.utils.timezone import now
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 # python back_end/manage.py makemigrations
 # python back_end/manage.py migrate
 
 
 class Source(models.Model):
-    name = models.CharField(max_length=100)
-    url = models.URLField(blank=True)
-
-
-# class Citation(models.Model):
-#     pass
+    name = models.CharField(max_length=100, unique=True)
+    url = models.URLField(max_length=200, blank=True, null=True)
 
 
 class Language(models.Model):
-    name = models.CharField(
-        max_length=200, help_text='The name of the language')
+    name = models.CharField(max_length=200, unique=True,
+                            help_text='The name of the language')
 
     def get_absolute_url(self):
         return reverse("language-detail", kwargs={"pk": self.pk})
@@ -33,7 +31,10 @@ class Language(models.Model):
 class Sentence(models.Model):
     sentence = models.CharField(max_length=1000)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    source = models.ForeignKey(Source, on_delete=models.RESTRICT)
+    sources = models.ManyToManyField(Source)
+
+    class Meta:
+        unique_together = ('sentence', 'language',)
 
     def __str__(self):
         return f'{self.sentence}'
@@ -43,8 +44,9 @@ class Word(models.Model):
     name = models.CharField(
         max_length=200, help_text='How the word is spelled')
     language = models.ForeignKey(
-        Language, on_delete=models.RESTRICT, help_text='The language of this word', null=True)
+        Language, on_delete=models.RESTRICT, null=True, help_text='The language of this word')
     usage = models.ManyToManyField(Sentence, blank=True)
+    sources = models.ManyToManyField(Source)
 
     class Meta:
         unique_together = ('name', 'language',)
@@ -58,10 +60,9 @@ class Translation(models.Model):
         Word, on_delete=models.RESTRICT, related_name='words')
     translation = models.ForeignKey(
         Word, on_delete=models.RESTRICT, related_name='translations')
+    sources = models.ManyToManyField(Source)
     wrong_tries = models.IntegerField(default=0)
     correct_tries = models.IntegerField(default=0)
-    difficulty = models.FloatField()
-    source = models.ForeignKey(Source, on_delete=models.RESTRICT)
 
     class Meta:
         unique_together = ('word', 'translation',)
@@ -85,6 +86,7 @@ class Wordlist(models.Model):
         settings.AUTH_USER_MODEL, related_name='wordlists', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     date_published = models.DateTimeField('date published', default=now)
+    materials = models.ManyToManyField(Translation, through='Material')
 
     VISIBILITY_STATUS = (
         ('pr', 'Private'),
@@ -116,9 +118,9 @@ class Wordlist(models.Model):
 
 class Material(models.Model):
     wordlist = models.ForeignKey(
-        Wordlist, on_delete=models.CASCADE, related_name='materials')
+        Wordlist, on_delete=models.CASCADE)
     translation = models.ForeignKey(
-        Translation, on_delete=models.RESTRICT, related_name='materials')
+        Translation, on_delete=models.RESTRICT)
     date_added = models.DateTimeField(default=now)
 
     def __str__(self) -> str:
