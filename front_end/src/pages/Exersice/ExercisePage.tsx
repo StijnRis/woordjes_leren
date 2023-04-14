@@ -13,7 +13,6 @@ interface Material {
     pk: number;
     wrong_tries: number;
     correct_tries: number;
-    difficulty: number;
     word: {
       name: string;
       language: {
@@ -52,7 +51,8 @@ interface WordlistData {
 }
 
 const ExercisePage = () => {
-  const [exerciseData, setExerciseData] = useState<WordlistData>(DUMMY_DATA);
+  const [exerciseData, setExerciseData] = useState<WordlistData>();
+  const [wordlistLength, setWordListLength] = useState<number>(0);
   const [exerciseIndex, setExerciseIndex] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
 
@@ -63,54 +63,50 @@ const ExercisePage = () => {
 
   // Get data
   useEffect(() => {
-    // fetch("http://127.0.0.1:8000/quiz/api/words", { mode: "no-cors" })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     setExerciseData(data);
-    //     setCurrentExercise(data["results"][0]);
-    //   })
-    //   .catch((err) => console.log(err.message));
-    setExerciseData(DUMMY_DATA);
-
-    setIsLoaded(true);
+    fetch("http://localhost:8000/quiz/api/wordlists/9/")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setExerciseData(data);
+        setWordListLength(data.materials.length);
+        setIsLoaded(true);
+      })
+      .catch((err) => console.log(err.message));
   }, []);
 
   const feedbackHandler = (validationResultCorrect: boolean) => {
-    if (validationResultCorrect) {
-      setCorrectCount(correctCount + 1);
+    if (feedbackVisible) {
+      nextExercise();
+
+      setFeedbackVisibility(false);
+    } else {
+      //Handle result
+      if (validationResultCorrect) {
+        setCorrectCount(correctCount + 1);
+      }
+      setCorrect(validationResultCorrect);
+
+      setFeedbackVisibility(true);
     }
-    setCorrect(validationResultCorrect);
-    setFeedbackVisibility(true);
   };
 
   const nextExercise = () => {
-    console.log(exerciseIndex + 1, exerciseData.materials.length);
     setExerciseIndex(exerciseIndex + 1);
 
-    if (exerciseIndex + 1 === exerciseData.materials.length) {
+    if (isLoaded && exerciseIndex + 1 === wordlistLength) {
       setExerciseFinished(true);
     }
   };
 
-  //Handle keyboard inputs
-  const handleKeyPress = (event: any) => {
-    if (event.key === "Enter" && feedbackVisible) {
-      setFeedbackVisibility(false);
-      nextExercise();
-    }
-  };
-
   let content;
+  
+  if (isLoaded && exerciseData !== undefined) {
+    if (!exerciseFinished) {
+      var currentExercise = exerciseData.materials[exerciseIndex];
+      if (currentExercise === undefined) {
+        content = <span>This exercise can not be loaded</span>;
+      }
 
-  console.log("Exercise finished: " + exerciseFinished);
-  if (!exerciseFinished) {
-    var currentExercise = exerciseData.materials[exerciseIndex];
-    if (currentExercise === undefined) {
-      content = <span>This exercise can not be loaded</span>;
-    }
-
-    if (isLoaded) {
       var word = currentExercise.translation.translation.name;
       var translation = currentExercise.translation.word.name;
       var language = currentExercise.translation.word.language.name;
@@ -135,19 +131,21 @@ const ExercisePage = () => {
           )}
         </>
       );
+    } else {
+      content = (
+        <>
+          <h1>Finished</h1>
+          <p>Correct: {correctCount}</p>
+          <p>Wrong: {wordlistLength - correctCount}</p>
+        </>
+      );
     }
   } else {
-    content = (
-      <>
-        <h1>Finished</h1>
-        <p>Correct: {correctCount}</p>
-        <p>Wrong: {exerciseData.materials.length - correctCount}</p>
-      </>
-    );
+    content = <h3 style={{margin:"auto"}}>Loading...</h3>
   }
 
   return (
-    <div className={classes.exercise_container} onKeyPress={handleKeyPress}>
+    <div className={classes.exercise_container}>
       <div className={classes.exercise}>{content}</div>
     </div>
   );
