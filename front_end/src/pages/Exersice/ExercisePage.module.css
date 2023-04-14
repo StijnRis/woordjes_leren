@@ -39,13 +39,18 @@ input:focus {
 /* Button */
 /* Exercise general */
 .exercise {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     min-width: 800px;
     min-height: 400px;
     background-color: rgba(240, 240, 240, 1);
-    display: flex;
-    flex-direction: column;
     padding: 40px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.exercise>* {
+    height: 100%;
 }
 
 .exercise #instruction {
@@ -64,6 +69,9 @@ input:focus {
 .exercise .content {
     min-height: 150px;
     height: 100%;
+    flex-grow: 1;
 }
+
+.exercise .correction {}
 
 /* Exercise types */

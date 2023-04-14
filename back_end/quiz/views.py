@@ -188,9 +188,9 @@ class WordViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class WordListViewSet(viewsets.ModelViewSet):
+class WordlistViewSet(viewsets.ModelViewSet):
     queryset = Wordlist.objects.all()
-    serializer_class = serializers.WordListSerializer
+    serializer_class = serializers.WordlistSerializer
     permission_classes = [
         permissions.IsAuthenticated, customPermissions.IsOwner | customPermissions.IsPublicReadOnly]
 
@@ -198,10 +198,9 @@ class WordListViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
     def get_serializer_class(self):
-        print(self.action)
         if self.action == 'list':
-            return serializers.BasicWordListSerializer
-        return serializers.WordListSerializer
+            return serializers.BasicWordlistSerializer
+        return serializers.WordlistSerializer
 
 
 class TranslationViewSet(viewsets.ModelViewSet):

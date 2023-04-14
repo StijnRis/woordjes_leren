@@ -117,11 +117,11 @@ class Wordlist(models.Model):
 
 
 class Material(models.Model):
-    wordlist = models.ForeignKey(
+    wordlist2 = models.ForeignKey(
         Wordlist, on_delete=models.CASCADE)
     translation = models.ForeignKey(
         Translation, on_delete=models.RESTRICT)
     date_added = models.DateTimeField(default=now)
 
     def __str__(self) -> str:
-        return f'{self.wordlist} -> {self.translation}'
+        return f'{self.wordlist2} -> {self.translation}'

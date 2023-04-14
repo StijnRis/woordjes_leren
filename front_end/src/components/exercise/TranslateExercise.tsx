@@ -11,7 +11,7 @@ interface Props {
   word: string;
   translation: string;
   hintSentence: string;
-  exerciseHandler: Function;
+  feedbackHandler: Function;
 }
 
 const TranslateExercise = ({
@@ -19,39 +19,44 @@ const TranslateExercise = ({
   word,
   translation,
   hintSentence,
-  exerciseHandler,
+  feedbackHandler,
 }: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   //Check value
   const validateAnswer = () => {
-    var answer = inputRef.current.value;
-    var result = answer == translation;
-    exerciseHandler(result);
+    if (inputRef.current !== null) {
+      var answer = inputRef.current.value;
+      var correct = answer.toLowerCase() == translation.toLowerCase();
 
-    //Empty field
-    inputRef.current.value = "";
+      feedbackHandler(correct);
+
+      //Empty field
+      inputRef.current.value = "";
+    }
   };
 
   //Handle keyboard inputs
-  const handleKeyPress = (event: KeyboardEvent) => {
+  const handleKeyPress = (event: any) => {
     if (event.key === "Enter") {
       validateAnswer();
     }
   };
 
   return (
-    <div className={exercise_style.exercise + " " + style.translate}>
+    <div className={style.translate}>
       <span id={exercise_style.instruction}>Vertaal naar het {language}</span>
 
       <div className={exercise_style.flex}>
         <span id={exercise_style.word}>{word}</span>
-        <HintButton
-          onClick={() => {
-            setHintVisibility(!hintVisible);
-          }}
-        />
+        {hintSentence !== "" && (
+          <HintButton
+            onClick={() => {
+              setHintVisibility(!hintVisible);
+            }}
+          />
+        )}
       </div>
 
       {hintVisible && <HintSentence word={word}>{hintSentence}</HintSentence>}

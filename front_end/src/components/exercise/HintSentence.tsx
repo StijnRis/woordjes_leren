@@ -12,16 +12,21 @@ const HintSentence = ({ word, children }: Props) => {
   if (wordIndex == -1) {
     hintSentence = children;
   } else {
-    const wordInSentence = children.substring(wordIndex, wordIndex + word.length);
+    const wordInSentence = children.substring(
+      wordIndex,
+      wordIndex + word.length
+    );
     const sentenceParts = children.split(wordInSentence);
 
-    hintSentence = <>{sentenceParts[0]}<strong>{wordInSentence}</strong>{sentenceParts[1]}</>
+    hintSentence = (
+      <>
+        {sentenceParts[0]}
+        <strong>{wordInSentence}</strong>
+        {sentenceParts[1]}
+      </>
+    );
   }
-  return (
-    <div id="hint-sentence">
-      "{hintSentence}"
-    </div>
-  );
+  return <div id="hint-sentence">"{hintSentence}"</div>;
 };
 
 export default HintSentence;

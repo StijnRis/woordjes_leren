@@ -9,7 +9,7 @@ router = DefaultRouter()
 router.register(r'languages', views.LanguageViewSet, basename="language")
 router.register(r'sentences', views.SentenceViewSet, basename="sentence")
 router.register(r'words', views.WordViewSet, basename="word")
-router.register(r'wordlists', views.WordListViewSet, basename="wordlist")
+router.register(r'wordlists', views.WordlistViewSet, basename="wordlist")
 router.register(r'translations', views.TranslationViewSet,
                 basename="translation")
 router.register(r'materials', views.MaterialViewSet, basename="material")

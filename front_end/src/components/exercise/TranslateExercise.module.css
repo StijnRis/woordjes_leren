@@ -1,3 +1,10 @@
+.translate {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-grow: 1;
+}
+
 .translate #word_input {
     width: 100%;
     padding: 10px 5px;

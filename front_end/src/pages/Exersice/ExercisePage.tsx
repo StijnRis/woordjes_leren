@@ -1,150 +1,67 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import TranslateExercise from "../../components/exercise/TranslateExercise";
+import Feedback from "../../components/exercise/Feedback";
 import classes from "./ExercisePage.module.css";
 import HintSentence from "../../components/exercise/HintSentence";
+import DUMMY_DATA from "./DUMMY_DATA";
 
-const DUMMY_DATA = {
-  pk: 2,
-  name: "Woordenlijst van Admin",
-  date_published: "2023-03-29T19:15:24.778640+02:00",
-  visibility: "pr",
+interface Material {
+  pk: number;
+  date_added: string;
+  translation: {
+    pk: number;
+    wrong_tries: number;
+    correct_tries: number;
+    difficulty: number;
+    word: {
+      name: string;
+      language: {
+        pk: number;
+        name: string;
+      };
+      usage: {
+        pk: number;
+        sentence: string;
+      }[];
+    };
+    translation: {
+      name: string;
+      language: {
+        pk: number;
+        name: string;
+      };
+      usage: {
+        pk: number;
+        sentence: string;
+      }[];
+    };
+  };
+}
+
+interface WordlistData {
+  pk: number;
+  name: string;
+  date_published: string;
+  visibility: string;
   owner: {
-    pk: 1,
-    username: "admin",
-  },
-  materials: [
-    {
-      pk: 4,
-      date_added: "2023-04-04T20:12:35+02:00",
-      translation: {
-        pk: 1,
-        wrong_tries: 0,
-        correct_tries: 0,
-        difficulty: 1.0,
-        word: {
-          pk: 1,
-          name: "lopen",
-          language: {
-            pk: 1,
-            name: "Nederlands",
-          },
-          usage: [
-            {
-              pk: 1,
-              sentence: "Wij lopen naar school.",
-            },
-          ],
-        },
-        translation: {
-          pk: 3,
-          name: "to walk",
-          language: {
-            pk: 2,
-            name: "English",
-          },
-          usage: [],
-        },
-      },
-    },
-    {
-      pk: 4,
-      date_added: "2023-04-04T20:12:35+02:00",
-      translation: {
-        pk: 1,
-        wrong_tries: 0,
-        correct_tries: 0,
-        difficulty: 1.0,
-        word: {
-          pk: 1,
-          name: "slapen",
-          language: {
-            pk: 1,
-            name: "Nederlands",
-          },
-          usage: [
-            {
-              pk: 1,
-              sentence: "Wij slapen op school.",
-            },
-          ],
-        },
-        translation: {
-          pk: 3,
-          name: "sleep",
-          language: {
-            pk: 2,
-            name: "English",
-          },
-          usage: [
-            {
-              pk: 21309,
-              sentence: "We sleep at school",
-            },
-          ],
-        },
-      },
-    },
-  ],
-};
+    pk: number;
+    username: string;
+  };
+  materials: Material[];
+}
 
 const ExercisePage = () => {
-  interface Material {
-    pk: number;
-    date_added: string;
-    translation: {
-      pk: number;
-      wrong_tries: number;
-      correct_tries: number;
-      difficulty: number;
-      word: {
-        name: string;
-        language: {
-          pk: number;
-          name: string;
-        };
-        usage: {
-          pk: number;
-          sentence: string;
-        }[];
-      };
-      translation: {
-        name: string;
-        language: {
-          pk: number;
-          name: string;
-        };
-        usage: {
-          pk: number;
-          sentence: string;
-        }[];
-      };
-    };
-  }
-
-  interface WordlistData {
-    pk: number;
-    name: string;
-    date_published: string;
-    visibility: string;
-    owner: {
-      pk: number;
-      username: string;
-    };
-    materials: Material[];
-  }
   const [exerciseData, setExerciseData] = useState<WordlistData>(DUMMY_DATA);
-  const [isLoaded, setIsLoaded] = useState(true);
   const [exerciseIndex, setExerciseIndex] = useState<number>(0);
+  const [correctCount, setCorrectCount] = useState<number>(0);
 
-  const nextExercise = (result: boolean) => {
-    if (exerciseIndex <= exerciseData.materials.length) {
-      setExerciseIndex(exerciseIndex + 1);
-    }
-  };
+  const [isLoaded, setIsLoaded] = useState<boolean>(true);
+  const [feedbackVisible, setFeedbackVisibility] = useState<boolean>(false);
+  const [correct, setCorrect] = useState<boolean>(false);
+  const [exerciseFinished, setExerciseFinished] = useState<boolean>(false);
 
-  var currentExercise = exerciseData.materials[exerciseIndex];
-
+  // Get data
   useEffect(() => {
     // fetch("http://127.0.0.1:8000/quiz/api/words", { mode: "no-cors" })
     //   .then((response) => response.json())
@@ -159,31 +76,81 @@ const ExercisePage = () => {
     setIsLoaded(true);
   }, []);
 
-  if (isLoaded && currentExercise !== undefined) {
-    var word = currentExercise.translation.translation.name;
-    var translation = currentExercise.translation.word.name;
-    var language = currentExercise.translation.translation.language.name;
+  const feedbackHandler = (validationResultCorrect: boolean) => {
+    if (validationResultCorrect) {
+      setCorrectCount(correctCount + 1);
+    }
+    setCorrect(validationResultCorrect);
+    setFeedbackVisibility(true);
+  };
 
-    var usages = currentExercise.translation.translation.usage;
-    var hintSentence = "";
-    if (usages.length > 0) {
-      hintSentence = usages[0].sentence;
+  const nextExercise = () => {
+    console.log(exerciseIndex + 1, exerciseData.materials.length);
+    setExerciseIndex(exerciseIndex + 1);
+
+    if (exerciseIndex + 1 === exerciseData.materials.length) {
+      setExerciseFinished(true);
+    }
+  };
+
+  //Handle keyboard inputs
+  const handleKeyPress = (event: any) => {
+    if (event.key === "Enter" && feedbackVisible) {
+      setFeedbackVisibility(false);
+      nextExercise();
+    }
+  };
+
+  let content;
+
+  console.log("Exercise finished: " + exerciseFinished);
+  if (!exerciseFinished) {
+    var currentExercise = exerciseData.materials[exerciseIndex];
+    if (currentExercise === undefined) {
+      content = <span>This exercise can not be loaded</span>;
     }
 
-    return (
-      <>
-        <div className={classes.exercise_container}>
+    if (isLoaded) {
+      var word = currentExercise.translation.translation.name;
+      var translation = currentExercise.translation.word.name;
+      var language = currentExercise.translation.word.language.name;
+
+      var usages = currentExercise.translation.translation.usage;
+      var hintSentence = "";
+      if (usages.length > 0) {
+        hintSentence = usages[0].sentence;
+      }
+
+      content = (
+        <>
           <TranslateExercise
             language={language}
             word={word}
             translation={translation}
             hintSentence={hintSentence}
-            exerciseHandler={nextExercise}
+            feedbackHandler={feedbackHandler}
           />
-        </div>
+          {feedbackVisible && (
+            <Feedback result={correct} correction={translation} />
+          )}
+        </>
+      );
+    }
+  } else {
+    content = (
+      <>
+        <h1>Finished</h1>
+        <p>Correct: {correctCount}</p>
+        <p>Wrong: {exerciseData.materials.length - correctCount}</p>
       </>
     );
   }
+
+  return (
+    <div className={classes.exercise_container} onKeyPress={handleKeyPress}>
+      <div className={classes.exercise}>{content}</div>
+    </div>
+  );
 };
 
 export default ExercisePage;
