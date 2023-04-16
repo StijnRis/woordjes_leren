@@ -1,0 +1,11 @@
+.error_container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle,  rgb(213, 239, 255) 0%, rgba(255,255,255,1) 100%);
+}
+.error_card {
+    text-align: center;
+}

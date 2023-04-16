@@ -39,20 +39,23 @@ const TranslateExercise = ({
 
   const keyboardHandler = (event: KeyboardEvent) => {
     if (event.key === "Enter" || event.code === "NumpadEnter") {
-      console.log("Yee");
       validateAnswer();
     }
-  }
+  };
 
   //Handle keyboard inputs
   useEffect(() => {
-    window.addEventListener("keydown", keyboardHandler);
+    if (inputRef.current !== null) {
+      inputRef.current.addEventListener("keydown", keyboardHandler);
 
-    // cleanup this component
-    return () => {
-      window.removeEventListener("keydown", keyboardHandler);
-    };
-  }, []);
+      // cleanup this component
+      return () => {
+        if (inputRef.current !== null) {
+          inputRef.current.removeEventListener("keydown", keyboardHandler);
+        }
+      };
+    }
+  }, [inputRef]);
 
   return (
     <div className={style.translate}>
@@ -72,11 +75,7 @@ const TranslateExercise = ({
       {hintVisible && <HintSentence word={word}>{hintSentence}</HintSentence>}
 
       <div className={exercise_style.content}>
-        <input
-          type="text"
-          id={style.word_input}
-          ref={inputRef}
-        />
+        <input type="text" id={style.word_input} ref={inputRef} />
       </div>
 
       <SubmitButton clickHandler={validateAnswer}>Controleren</SubmitButton>

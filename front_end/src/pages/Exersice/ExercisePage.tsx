@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import useStateRef from "react-usestateref";
 import Header from "../../components/Header";
 import TranslateExercise from "../../components/exercise/TranslateExercise";
 import Feedback from "../../components/exercise/Feedback";
@@ -51,19 +53,36 @@ interface WordlistData {
 }
 
 const ExercisePage = () => {
+  //Get id
+  const params = useParams();
+  const id = params.id;
+
+  const navigate = useNavigate();
+
   const [exerciseData, setExerciseData] = useState<WordlistData>();
   const [wordlistLength, setWordListLength] = useState<number>(0);
-  const [exerciseIndex, setExerciseIndex] = useState<number>(0);
-  const [correctCount, setCorrectCount] = useState<number>(0);
+  const [exerciseIndex, setExerciseIndex, exerciseIndexRef] =
+    useStateRef<number>(0);
+  const [correctCount, setCorrectCount, correctCountRef] =
+    useStateRef<number>(0);
+
+  const [feedbackVisible, setFeedbackVisibility, feedbackVisibleRef] =
+    useStateRef<boolean>(false);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(true);
-  const [feedbackVisible, setFeedbackVisibility] = useState<boolean>(false);
   const [correct, setCorrect] = useState<boolean>(false);
-  const [exerciseFinished, setExerciseFinished] = useState<boolean>(false);
+  const [exerciseFinished, setExerciseFinished, exerciseFinishedRef] =
+    useStateRef<boolean>(false);
 
   // Get data
   useEffect(() => {
-    fetch("http://localhost:8000/quiz/api/wordlists/9/")
+    fetch(`http://localhost:8000/quiz/api/wordlists/${id}/`)
+      .then((response) => {
+        if ([403, 404].includes(response.status)) {
+          throw response;
+        }
+        return response;
+      })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -71,18 +90,28 @@ const ExercisePage = () => {
         setWordListLength(data.materials.length);
         setIsLoaded(true);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        if (err instanceof Response) {
+          if (err.status === 403) {
+            navigate("/403");
+          } else if (err.status === 404) {
+            navigate("/404");
+          }
+        } else {
+          console.log(err);
+        }
+      });
   }, []);
 
-  const feedbackHandler = (validationResultCorrect: boolean) => {
-    if (feedbackVisible) {
+  const handleFeedback = (validationResultCorrect: boolean) => {
+    if (feedbackVisibleRef.current) {
       nextExercise();
 
       setFeedbackVisibility(false);
     } else {
       //Handle result
       if (validationResultCorrect) {
-        setCorrectCount(correctCount + 1);
+        setCorrectCount(correctCountRef.current + 1);
       }
       setCorrect(validationResultCorrect);
 
@@ -91,17 +120,17 @@ const ExercisePage = () => {
   };
 
   const nextExercise = () => {
-    setExerciseIndex(exerciseIndex + 1);
+    setExerciseIndex(exerciseIndexRef.current + 1);
 
-    if (isLoaded && exerciseIndex + 1 === wordlistLength) {
+    if (isLoaded && exerciseIndexRef.current === wordlistLength) {
       setExerciseFinished(true);
     }
   };
 
   let content;
-  
+
   if (isLoaded && exerciseData !== undefined) {
-    if (!exerciseFinished) {
+    if (!exerciseFinishedRef.current) {
       var currentExercise = exerciseData.materials[exerciseIndex];
       if (currentExercise === undefined) {
         content = <span>This exercise can not be loaded</span>;
@@ -124,7 +153,7 @@ const ExercisePage = () => {
             word={word}
             translation={translation}
             hintSentence={hintSentence}
-            feedbackHandler={feedbackHandler}
+            feedbackHandler={handleFeedback}
           />
           {feedbackVisible && (
             <Feedback result={correct} correction={translation} />
@@ -141,7 +170,14 @@ const ExercisePage = () => {
       );
     }
   } else {
-    content = <h3 style={{margin:"auto"}}>Loading...</h3>
+    content = (
+      <div className={classes.loading_container}>
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <h3>Loading...</h3>
+      </div>
+    );
   }
 
   return (
