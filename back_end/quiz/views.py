@@ -192,7 +192,7 @@ class WordlistViewSet(viewsets.ModelViewSet):
     queryset = Wordlist.objects.all()
     serializer_class = serializers.WordlistSerializer
     permission_classes = [
-        # permissions.IsAuthenticated, 
+        permissions.IsAuthenticated,
         customPermissions.IsOwner | customPermissions.IsPublicReadOnly]
 
     def perform_create(self, serializer):
