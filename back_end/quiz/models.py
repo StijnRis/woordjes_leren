@@ -56,21 +56,21 @@ class Word(models.Model):
 
 
 class Translation(models.Model):
-    word = models.ForeignKey(
-        Word, on_delete=models.RESTRICT, related_name='words')
-    translation = models.ForeignKey(
-        Word, on_delete=models.RESTRICT, related_name='translations')
+    from_word = models.ForeignKey(
+        Word, on_delete=models.RESTRICT, related_name='from_translations')
+    to_word = models.ForeignKey(
+        Word, on_delete=models.RESTRICT, related_name='to_translations')
     sources = models.ManyToManyField(Source)
     wrong_tries = models.IntegerField(default=0)
     correct_tries = models.IntegerField(default=0)
 
     class Meta:
-        unique_together = ('word', 'translation',)
+        unique_together = ('from_word', 'to_word',)
 
     def get_options(self):
         words = list(Word.objects.all())
         random_words = random.sample(words, 3)
-        random_words.append(self.translation)
+        random_words.append(self.to_word)
         return random_words
 
     def __str__(self):
@@ -78,7 +78,7 @@ class Translation(models.Model):
         if self.correct_tries > 0:
             percentage = str(
                 round(self.correct_tries / (self.correct_tries + self.wrong_tries) * 100)) + '%'
-        return f'{self.word} -> {self.translation}  ({percentage})'
+        return f'{self.from_word} -> {self.to_word}  ({percentage})'
 
 
 class Wordlist(models.Model):

@@ -40,10 +40,10 @@ class WordInline(admin.TabularInline):
 
 @admin.register(Translation)
 class TranslationAdmin(admin.ModelAdmin):
-    list_display = ('word', 'translation')
+    list_display = ('from_word', 'to_word')
     fieldsets = (
         (None, {
-            'fields': ('word', 'translation')
+            'fields': ('from_word', 'to_word')
         }),
         ('Stats', {
             'fields': ('correct_tries', 'wrong_tries')

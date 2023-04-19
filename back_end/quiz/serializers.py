@@ -18,7 +18,7 @@ class LanguageSerializer(UniqueFieldsMixin, serializers.HyperlinkedModelSerializ
         try:
             return Language.objects.get(name=validated_data['name'])
         except ObjectDoesNotExist:
-            return super().create(validated_data)
+            return super().create(**validated_data)
 
 
 class SentenceSerializer(serializers.HyperlinkedModelSerializer):
@@ -35,37 +35,37 @@ class BasicSentenceSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = ['pk', 'sentence']
 
 
-class WordSerializer(UniqueFieldsMixin, serializers.HyperlinkedModelSerializer):
+class WordSerializer(WritableNestedModelSerializer):
     usage = BasicSentenceSerializer(many=True, read_only=True)
     language = LanguageSerializer(read_only=False)
 
     class Meta:
         model = Word
         fields = ['pk', 'name', 'language', 'usage']
-        read_only_fields = ['pk', 'name']
+        read_only_fields = ['pk']
 
     def create(self, validated_data):
         try:
             return Language.objects.get(name=validated_data['name'], language=validated_data['language'])
         except ObjectDoesNotExist:
-            return super().create(validated_data)
+            return super().create(**validated_data)
 
 
-class TranslationSerializer(UniqueFieldsMixin, serializers.HyperlinkedModelSerializer):
-    word = WordSerializer(read_only=False)
-    translation = WordSerializer(read_only=False)
+class TranslationSerializer(WritableNestedModelSerializer):
+    from_word = WordSerializer(read_only=False)
+    to_word = WordSerializer(read_only=False)
 
     class Meta:
         model = Translation
         fields = ['pk', 'wrong_tries', 'correct_tries',
-                  'word', 'translation',]
+                  'from_word', 'to_word',]
         read_only_fields = ['pk', 'wrong_tries', 'correct_tries',]
 
     def create(self, validated_data):
         try:
-            return Language.objects.get(word=validated_data['word'], translation=validated_data['translation'])
+            return Translation.objects.get(from_word=validated_data['from_word'], to_word=validated_data['to_word'])
         except ObjectDoesNotExist:
-            return super().create(validated_data)
+            return super().create(**validated_data)
 
 
 class MaterialSerializer(serializers.HyperlinkedModelSerializer):
@@ -84,7 +84,7 @@ class MaterialWordlistSerializer(WritableNestedModelSerializer):
         read_only_fields = ['pk', 'date_added']
 
 
-class BasicWordlistSerializer(serializers.HyperlinkedModelSerializer):
+class BasicWordlistSerializer(WritableNestedModelSerializer):
     owner = BasicUserProfileSerializer(read_only=True)
 
     class Meta:
@@ -113,45 +113,3 @@ class WordlistSerializer(WritableNestedModelSerializer):
     #             **material_data['translation'])
     #         wordlist.materials.add(translation)
     #     return wordlist
-
-
-'''
-{
-    "name": "Test123",
-    "visibility": "pl",
-    "materials": [
-        {
-            "translation": {
-                "word": {
-                    "name": "lopen",
-                    "language": {
-                        "name": "Nederlands"
-                    }
-                },
-                "translation": {
-                    "name": "to walk",
-                    "language": {
-                        "name": "English"
-                    }
-                }
-            }
-        },
-        {
-            "translation": {
-                "word": {
-                    "name": "spring",
-                    "language": {
-                        "name": "Nederlands"
-                    }
-                },
-                "translation": {
-                    "name": "to jump",
-                    "language": {
-                        "name": "English"
-                    }
-                }
-            }
-        }
-    ]
-}
-'''
