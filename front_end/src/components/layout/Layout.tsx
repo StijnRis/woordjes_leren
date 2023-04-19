@@ -8,7 +8,7 @@ interface Props {
 
 function Layout({ children }: Props) {
   return (
-    <div>
+    <div className={classes.wrapper}>
       <Navigation />
       <main className={classes.main}>{children}</main>
     </div>

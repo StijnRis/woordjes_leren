@@ -4,20 +4,21 @@ interface Props {
 }
 
 type WordlistData = {
-  id: number;
+  pk: number;
   name: string;
-  progress: number;
 };
 
 function WordlistsList({ wordlists }: Props) {
+  console.log(wordlists);
   return (
     <div className="row">
       {wordlists.map((wordlist) => {
+        console.log(wordlist.pk);
         return (
-          <div className="col-sm-6 mb-3 mb-sm-0">
+          <div className="col-sm-6 mb-3 mb-sm-0" key={wordlist.pk}>
             <Wordlist
-              key={wordlist.id}
-              progress={wordlist.progress}
+              id={wordlist.pk}
+              progress={0}
               title={wordlist.name}
             ></Wordlist>
           </div>

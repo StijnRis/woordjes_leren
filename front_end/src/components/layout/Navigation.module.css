@@ -2,7 +2,7 @@
     color: red;
 }
 nav {
-    position: fixed!important;
+    position: sticky!important;
     width: 100%;
 }
 .url {}

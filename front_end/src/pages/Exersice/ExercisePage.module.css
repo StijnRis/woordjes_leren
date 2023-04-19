@@ -74,4 +74,9 @@ input:focus {
 
 .exercise .correction {}
 
+.exercise .loading_container {
+    margin: auto;
+    display: flex;
+    gap: 10px;
+}
 /* Exercise types */

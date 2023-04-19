@@ -3,11 +3,12 @@ import ModalDelete from "../ModalDelete";
 import Card from "../ui/Card";
 
 interface Props {
+  id: number;
   title: string;
   progress: number;
 }
 
-function Wordlist({ title, progress }: Props) {
+function Wordlist({ id, title, progress }: Props) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   function handleDelete() {
@@ -44,9 +45,9 @@ function Wordlist({ title, progress }: Props) {
               ></div>
             </div>
             <p className="card-text">{progressPercentage}% goed.</p>
-            <button type="button" className="btn btn-primary">
+            <a href={"/exercise/" + id} className="btn btn-primary">
               Oefenen
-            </button>
+            </a>
             <button type="button" className="btn btn-secondary">
               Bewerken
             </button>

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import classes from "./SubmitButton.module.css";
 
 interface Props {
   children: string;
-  clickHandler: Function;
+  clickHandler: MouseEventHandler;
 }
 
 const SubmitButton = ({ children, clickHandler }: Props) => {

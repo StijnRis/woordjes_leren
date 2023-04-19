@@ -5,6 +5,7 @@
     transition: .1s ease;
     width: fit-content;
     margin-left: auto;
+    cursor: pointer;
 }
 
 .button_submit:hover {

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Word from "./Word";
 import HintButton from "../ui/buttons/HintButton";
 import HintSentence from "./HintSentence";
@@ -37,12 +37,25 @@ const TranslateExercise = ({
     }
   };
 
-  //Handle keyboard inputs
-  const handleKeyPress = (event: any) => {
-    if (event.key === "Enter") {
+  const keyboardHandler = (event: KeyboardEvent) => {
+    if (event.key === "Enter" || event.code === "NumpadEnter") {
       validateAnswer();
     }
   };
+
+  //Handle keyboard inputs
+  useEffect(() => {
+    if (inputRef.current !== null) {
+      inputRef.current.addEventListener("keydown", keyboardHandler);
+
+      // cleanup this component
+      return () => {
+        if (inputRef.current !== null) {
+          inputRef.current.removeEventListener("keydown", keyboardHandler);
+        }
+      };
+    }
+  }, [inputRef]);
 
   return (
     <div className={style.translate}>
@@ -62,12 +75,7 @@ const TranslateExercise = ({
       {hintVisible && <HintSentence word={word}>{hintSentence}</HintSentence>}
 
       <div className={exercise_style.content}>
-        <input
-          type="text"
-          id={style.word_input}
-          ref={inputRef}
-          onKeyPress={handleKeyPress}
-        />
+        <input type="text" id={style.word_input} ref={inputRef} />
       </div>
 
       <SubmitButton clickHandler={validateAnswer}>Controleren</SubmitButton>
