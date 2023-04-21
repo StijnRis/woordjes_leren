@@ -1,12 +1,8 @@
 import { useRef } from "react";
 import Card from "../ui/card/Card";
-import classes from "./newWordlistForm.module.css";
 
-interface Props {
-  onAddMeetup: (data: object) => void;
-}
 
-function NewWordListForm({ onAddMeetup }: Props) {
+function EditWordListForm() {
   const refTitle = useRef<HTMLInputElement>(null);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {

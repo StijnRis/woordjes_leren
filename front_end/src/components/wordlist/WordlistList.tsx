@@ -1,4 +1,4 @@
-import Wordlist from "./Wordlist";
+import Wordlist from "./WordlistOverview";
 interface Props {
   wordlists: Array<WordlistData>;
 }

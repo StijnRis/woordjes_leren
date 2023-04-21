@@ -173,19 +173,19 @@ API vieuws start from here
 class LanguageViewSet(viewsets.ModelViewSet):
     queryset = Language.objects.all()
     serializer_class = serializers.LanguageSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [customPermissions.IsPublicReadOnly]
 
 
 class SentenceViewSet(viewsets.ModelViewSet):
     queryset = Sentence.objects.all()
     serializer_class = serializers.SentenceSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [customPermissions.IsPublicReadOnly]
 
 
 class WordViewSet(viewsets.ModelViewSet):
     queryset = Word.objects.all()
     serializer_class = serializers.WordSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [customPermissions.IsPublicReadOnly]
 
 
 class WordlistViewSet(viewsets.ModelViewSet):
@@ -207,10 +207,10 @@ class WordlistViewSet(viewsets.ModelViewSet):
 class TranslationViewSet(viewsets.ModelViewSet):
     queryset = Translation.objects.all()
     serializer_class = serializers.TranslationSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [customPermissions.IsPublicReadOnly]
 
 
 class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
     serializer_class = serializers.MaterialSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [customPermissions.IsPublicReadOnly]

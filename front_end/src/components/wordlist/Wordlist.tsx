@@ -1,74 +1,53 @@
-import { useState } from "react";
-import ModalDelete from "../ModalDelete";
-import Card from "../ui/Card";
+import { useEffect, useRef, useState } from "react";
+import Card from "../ui/card/Card";
+import classes from "./newWordlistForm.module.css";
+import { useNavigate } from "react-router-dom";
+import Loading from "../ui/loading/Loading";
 
 interface Props {
   id: number;
-  title: string;
-  progress: number;
+  handleData: (data: Wordlist) => void;
+  children: JSX.Element | JSX.Element[];
 }
 
-function Wordlist({ id, title, progress }: Props) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+function Wordlist({ id, handleData, children }: Props) {
+  const navigate = useNavigate();
 
-  function handleDelete() {
-    setModalIsOpen(true);
+  const [isLoaded, setIsLoaded] = useState<boolean>(true);
+
+  // Getting data
+  useEffect(() => {
+    fetch(`http://localhost:8000/quiz/api/wordlists/${id}/`)
+      .then((response) => {
+        if ([403, 404].includes(response.status)) {
+          throw response;
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        handleData(data);
+        setIsLoaded(true);
+      })
+      .catch((err) => {
+        if (err instanceof Response) {
+          if (err.status === 403) {
+            navigate("/403");
+          } else if (err.status === 404) {
+            navigate("/404");
+          }
+        } else {
+          console.log(err);
+        }
+      });
+  }, []);
+
+  if (!isLoaded) {
+    return <Loading />;
+  } else {
+    return children;
   }
-
-  function handleCancelDelete() {
-    setModalIsOpen(false);
-  }
-
-  function handleConfirmDelete() {
-    setModalIsOpen(false);
-  }
-
-  var progressPercentage = progress * 100;
-  return (
-    <>
-      <Card>
-        <div className="card">
-          <div className="card-header">Recent geoefend</div>
-          <div className="card-body">
-            <h5 className="card-title">{title}</h5>
-            <div
-              className="progress"
-              role="progressbar"
-              aria-label="Basic example"
-              aria-valuenow={0}
-              aria-valuemin={0}
-              aria-valuemax={1}
-            >
-              <div
-                className="progress-bar"
-                style={{ width: progressPercentage + "%" }}
-              ></div>
-            </div>
-            <p className="card-text">{progressPercentage}% goed.</p>
-            <a href={"/exercise/" + id} className="btn btn-primary">
-              Oefenen
-            </a>
-            <button type="button" className="btn btn-secondary">
-              Bewerken
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={handleDelete}
-            >
-              Verwijderen
-            </button>
-          </div>
-        </div>
-      </Card>
-      {modalIsOpen && (
-        <ModalDelete
-          onCancel={handleCancelDelete}
-          onConfirm={handleConfirmDelete}
-        />
-      )}
-    </>
-  );
 }
 
 export default Wordlist;

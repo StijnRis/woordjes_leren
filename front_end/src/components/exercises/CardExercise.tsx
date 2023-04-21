@@ -31,6 +31,7 @@ const CardExercise = ({
   const variants = {
     normal: { transform: "rotateY(0deg)" },
     flipped: { transform: "rotateY(180deg)" },
+    exit: { transform: "rotateY(180deg)" },
   };
 
   return (
@@ -41,6 +42,7 @@ const CardExercise = ({
       }}
       initial={"normal"}
       animate={isFlipped ? "flipped" : "normal"}
+      exit="exit"
       variants={variants}
     >
       {/* FRONT */}

@@ -16,6 +16,8 @@ class IsPublicReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        if obj.visibility == 'pl' and request.method in permissions.SAFE_METHODS:
+        visibility = obj.visibility == 'pl'
+        safe = request.method in permissions.SAFE_METHODS
+        if visibility and safe:
             return True
         return False

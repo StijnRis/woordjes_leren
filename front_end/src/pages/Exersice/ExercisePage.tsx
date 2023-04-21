@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useStateRef from "react-usestateref";
+import { AnimatePresence, motion } from "framer-motion";
+import Exercise from "../../components/exercises/Exercise";
 import TranslateExercise from "../../components/exercises/TranslateExercise";
+import CardExercise from "../../components/exercises/CardExercise";
 import Feedback from "../../components/exercise/Feedback";
 import classes from "./ExercisePage.module.css";
 import DUMMY_DATA from "./DUMMY_DATA";
-import CardExercise from "../../components/exercises/CardExercise";
 
 interface Material {
   pk: number;
@@ -60,22 +62,28 @@ const ExercisePage = () => {
 
   const navigate = useNavigate();
 
+  // Wordlist
   const [exerciseData, setExerciseData] = useState<WordlistData>();
-  const [wordlistLength, setWordListLength] = useState<number>(0);
-  const [exerciseIndex, setExerciseIndex, exerciseIndexRef] =
-    useStateRef<number>(0);
-  const [correctCount, setCorrectCount, correctCountRef] =
-    useStateRef<number>(0);
-
-  const [feedbackVisible, setFeedbackVisibility, feedbackVisibleRef] =
-    useStateRef<boolean>(false);
-
   const [isLoaded, setIsLoaded] = useState<boolean>(true);
-  const [correct, setCorrect] = useState<boolean>(false);
+  const [wordlistLength, setWordListLength] = useState<number>(0);
   const [exerciseFinished, setExerciseFinished, exerciseFinishedRef] =
     useStateRef<boolean>(false);
 
-  // Get data
+  // Exercise
+  const [correctCount, setCorrectCount, correctCountRef] =
+    useStateRef<number>(0);
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [exerciseIndex, setExerciseIndex, exerciseIndexRef] =
+    useStateRef<number>(0);
+  const [exerciseType, setExerciseType] = useState<number>(
+    Math.floor(Math.random() * 2)
+  );
+
+  // Feedback
+  const [feedbackVisible, setFeedbackVisibility, feedbackVisibleRef] =
+    useStateRef<boolean>(false);
+
+  // Getting data
   useEffect(() => {
     fetch(`http://localhost:8000/quiz/api/wordlists/${id}/`)
       .then((response) => {
@@ -114,7 +122,7 @@ const ExercisePage = () => {
       if (validationResultCorrect) {
         setCorrectCount(correctCountRef.current + 1);
       }
-      setCorrect(validationResultCorrect);
+      setIsCorrect(validationResultCorrect);
 
       setFeedbackVisibility(true);
     }
@@ -122,6 +130,7 @@ const ExercisePage = () => {
 
   const nextExercise = () => {
     setExerciseIndex(exerciseIndexRef.current + 1);
+    setExerciseType(Math.floor(Math.random() * 2));
 
     if (isLoaded && exerciseIndexRef.current === wordlistLength) {
       setExerciseFinished(true);
@@ -131,6 +140,7 @@ const ExercisePage = () => {
   let content;
 
   if (isLoaded && exerciseData !== undefined) {
+    console.log(exerciseFinishedRef.current);
     if (!exerciseFinishedRef.current) {
       var currentExercise = exerciseData.materials[exerciseIndex];
       if (currentExercise == undefined) {
@@ -159,24 +169,28 @@ const ExercisePage = () => {
 
         content = (
           <>
-            {/* <TranslateExercise
-              language={language}
-              word={word}
-              translation={translation}
-              hintSentence={hintSentence}
-              feedbackHandler={handleFeedback}
-            /> */}
-            <CardExercise
-              from_language={from_language}
-              to_language={to_language}
-              from_word={from_word}
-              to_word={to_word}
-              from_sentence={from_hint_sentence}
-              to_sentence={to_hint_sentence}
-              nextExerciseHandler={nextExercise}
-            />
+            {exerciseType == 0 && (
+              <TranslateExercise
+                language={to_language}
+                word={from_word}
+                translation={to_word}
+                hintSentence={from_hint_sentence}
+                feedbackHandler={handleFeedback}
+              />
+            )}
+            {exerciseType == 1 && (
+              <CardExercise
+                from_language={from_language}
+                to_language={to_language}
+                from_word={from_word}
+                to_word={to_word}
+                from_sentence={from_hint_sentence}
+                to_sentence={to_hint_sentence}
+                nextExerciseHandler={nextExercise}
+              />
+            )}
             <Feedback
-              result={correct}
+              result={isCorrect}
               correction={to_word}
               isOpen={feedbackVisible}
             />
@@ -205,7 +219,9 @@ const ExercisePage = () => {
 
   return (
     <div className={classes.exercise_container}>
-      <div className={classes.exercise}>{content}</div>
+      <AnimatePresence initial={false}>
+        <Exercise key={exerciseIndex}>{content}</Exercise>
+      </AnimatePresence>
     </div>
   );
 };

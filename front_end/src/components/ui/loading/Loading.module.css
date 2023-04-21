@@ -1,0 +1,5 @@
+.loading_container {
+    margin: auto;
+    display: flex;
+    gap: 10px;
+}
