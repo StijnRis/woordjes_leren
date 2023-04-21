@@ -21,7 +21,7 @@
 
 .exercise_container {
     width: 100%;
-    min-height: 100vh;
+    min-height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,9 +44,11 @@ input:focus {
     flex-direction: column;
     min-width: 800px;
     min-height: 400px;
+}
+.exercise > div {
     background-color: rgba(240, 240, 240, 1);
-    padding: 40px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    padding: 40px;
 }
 
 .exercise>* {
@@ -62,7 +64,7 @@ input:focus {
     font-weight: 600;
 }
 
-.exercise #hint-sentence {
+.exercise #hint_sentence {
     padding-bottom: 20px;
 }
 

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import Word from "./Word";
 import HintButton from "../ui/buttons/HintButton";
-import HintSentence from "./HintSentence";
+import HintSentence from "../exercise/HintSentence";
 import SubmitButton from "../ui/buttons/SubmitButton";
 import style from "./TranslateExercise.module.css";
 import exercise_style from "../../pages/Exersice/ExercisePage.module.css";
@@ -75,7 +74,12 @@ const TranslateExercise = ({
       {hintVisible && <HintSentence word={word}>{hintSentence}</HintSentence>}
 
       <div className={exercise_style.content}>
-        <input type="text" id={style.word_input} ref={inputRef} />
+        <input
+          type="text"
+          id={style.word_input}
+          ref={inputRef}
+          autoComplete="off"
+        />
       </div>
 
       <SubmitButton clickHandler={validateAnswer}>Controleren</SubmitButton>

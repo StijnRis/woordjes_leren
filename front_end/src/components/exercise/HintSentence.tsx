@@ -26,7 +26,7 @@ const HintSentence = ({ word, children }: Props) => {
       </>
     );
   }
-  return <div id="hint-sentence">"{hintSentence}"</div>;
+  return <div id="hint_sentence">"{hintSentence}"</div>;
 };
 
 export default HintSentence;

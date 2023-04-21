@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useStateRef from "react-usestateref";
-import Header from "../../components/Header";
-import TranslateExercise from "../../components/exercise/TranslateExercise";
+import TranslateExercise from "../../components/exercises/TranslateExercise";
 import Feedback from "../../components/exercise/Feedback";
 import classes from "./ExercisePage.module.css";
-import HintSentence from "../../components/exercise/HintSentence";
 import DUMMY_DATA from "./DUMMY_DATA";
+import CardExercise from "../../components/exercises/CardExercise";
 
 interface Material {
   pk: number;
@@ -15,7 +14,8 @@ interface Material {
     pk: number;
     wrong_tries: number;
     correct_tries: number;
-    word: {
+    from_word: {
+      pk: number;
       name: string;
       language: {
         pk: number;
@@ -26,7 +26,8 @@ interface Material {
         sentence: string;
       }[];
     };
-    translation: {
+    to_word: {
+      pk: number;
       name: string;
       language: {
         pk: number;
@@ -132,34 +133,56 @@ const ExercisePage = () => {
   if (isLoaded && exerciseData !== undefined) {
     if (!exerciseFinishedRef.current) {
       var currentExercise = exerciseData.materials[exerciseIndex];
-      if (currentExercise === undefined) {
-        content = <span>This exercise can not be loaded</span>;
+      if (currentExercise == undefined) {
+        content = (
+          <span>
+            <strong>Error:</strong> This exercise can not be loaded
+          </span>
+        );
+      } else {
+        var from_word = currentExercise.translation.from_word.name;
+        var to_word = currentExercise.translation.to_word.name;
+        var from_language = currentExercise.translation.from_word.language.name;
+        var to_language = currentExercise.translation.to_word.language.name;
+        var from_word_usages = currentExercise.translation.from_word.usage;
+        var to_word_usages = currentExercise.translation.to_word.usage;
+
+        var from_hint_sentence = "";
+        if (from_word_usages.length > 0) {
+          from_hint_sentence = from_word_usages[0].sentence;
+        }
+
+        var to_hint_sentence = "";
+        if (to_word_usages.length > 0) {
+          to_hint_sentence = to_word_usages[0].sentence;
+        }
+
+        content = (
+          <>
+            {/* <TranslateExercise
+              language={language}
+              word={word}
+              translation={translation}
+              hintSentence={hintSentence}
+              feedbackHandler={handleFeedback}
+            /> */}
+            <CardExercise
+              from_language={from_language}
+              to_language={to_language}
+              from_word={from_word}
+              to_word={to_word}
+              from_sentence={from_hint_sentence}
+              to_sentence={to_hint_sentence}
+              nextExerciseHandler={nextExercise}
+            />
+            <Feedback
+              result={correct}
+              correction={to_word}
+              isOpen={feedbackVisible}
+            />
+          </>
+        );
       }
-
-      var word = currentExercise.translation.translation.name;
-      var translation = currentExercise.translation.word.name;
-      var language = currentExercise.translation.word.language.name;
-
-      var usages = currentExercise.translation.translation.usage;
-      var hintSentence = "";
-      if (usages.length > 0) {
-        hintSentence = usages[0].sentence;
-      }
-
-      content = (
-        <>
-          <TranslateExercise
-            language={language}
-            word={word}
-            translation={translation}
-            hintSentence={hintSentence}
-            feedbackHandler={handleFeedback}
-          />
-          {feedbackVisible && (
-            <Feedback result={correct} correction={translation} />
-          )}
-        </>
-      );
     } else {
       content = (
         <>
