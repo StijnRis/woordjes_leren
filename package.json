@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "framer-motion": "^10.12.4",
-    "react-usestateref": "^1.0.8"
-  }
-}

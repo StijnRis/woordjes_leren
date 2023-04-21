@@ -20,7 +20,8 @@ python manage.py shell
 
 ## Install
 
-npm install or npm i
+cd front_end
+npm install
 
 ## Start
 
