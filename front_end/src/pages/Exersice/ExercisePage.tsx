@@ -140,7 +140,6 @@ const ExercisePage = () => {
   let content;
 
   if (isLoaded && exerciseData !== undefined) {
-    console.log(exerciseFinishedRef.current);
     if (!exerciseFinishedRef.current) {
       var currentExercise = exerciseData.materials[exerciseIndex];
       if (currentExercise == undefined) {

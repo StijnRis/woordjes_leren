@@ -79,6 +79,7 @@ const TranslateExercise = ({
           id={style.word_input}
           ref={inputRef}
           autoComplete="off"
+          autoFocus
         />
       </div>
 

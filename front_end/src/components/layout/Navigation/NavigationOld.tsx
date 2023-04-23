@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import classes from "./Navigation.module.css";
+import main_classes from "../Layout.module.css";
 
 function Navigation() {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
-      <div className="container-fluid">
+      <div className={"container-fluid " + main_classes.wrapper}>
         <Link className={"navbar-brand " + classes.header} to="/">
           <img
             src="/src/assets/react.svg"

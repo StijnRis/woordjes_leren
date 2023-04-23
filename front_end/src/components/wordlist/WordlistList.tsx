@@ -9,7 +9,6 @@ type WordlistData = {
 };
 
 function WordlistsList({ wordlists }: Props) {
-  console.log(wordlists);
   return (
     <div className="row">
       {wordlists.map((wordlist) => {

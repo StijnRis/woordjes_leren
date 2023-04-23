@@ -1,0 +1,14 @@
+.banner {
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.banner_content {
+    text-align: center;
+}
+.main_content {
+    padding: 40px 0px;
+    background-color: aliceblue;
+}

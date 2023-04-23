@@ -5,6 +5,7 @@ import HintSentence from "../exercise/HintSentence";
 import SubmitButton from "../ui/buttons/SubmitButton";
 import style from "./CardExercise.module.css";
 import exercise_style from "../../pages/Exersice/ExercisePage.module.css";
+import useStateRef from "react-usestateref";
 
 interface Props {
   from_language: string;
@@ -26,7 +27,7 @@ const CardExercise = ({
   nextExerciseHandler,
 }: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipped, setIsFlipped, isFlippedRef] = useStateRef<boolean>(false);
 
   const variants = {
     normal: { transform: "rotateY(0deg)" },
@@ -34,12 +35,34 @@ const CardExercise = ({
     exit: { transform: "rotateY(180deg)" },
   };
 
+  useEffect(() => {
+    window.addEventListener("keydown", keyboardHandler);
+
+    // cleanup this component
+    return () => {
+      window.removeEventListener("keydown", keyboardHandler);
+    };
+  }, []);
+
+  const keyboardHandler = (event: KeyboardEvent) => {
+    if (event.key === "Enter" || event.code === "NumpadEnter") {
+      if (isFlippedRef.current) {
+        nextExerciseHandler();
+      } else {
+        console.log("flip");
+        flip();
+      }
+    }
+  };
+
+  const flip = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   return (
     <motion.div
       className={style.card}
-      onClick={() => {
-        setIsFlipped(!isFlipped);
-      }}
+      onClick={flip}
       initial={"normal"}
       animate={isFlipped ? "flipped" : "normal"}
       exit="exit"
