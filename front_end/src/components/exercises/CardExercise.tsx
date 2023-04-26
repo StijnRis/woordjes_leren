@@ -28,6 +28,8 @@ const CardExercise = ({
 }: Props) => {
   const [hintVisible, setHintVisibility] = useState(false);
   const [isFlipped, setIsFlipped, isFlippedRef] = useStateRef<boolean>(false);
+  const [keyboardFrozen, setKeyboardFrozen, keyboardFrozenRef] =
+    useStateRef<boolean>(true);
 
   const variants = {
     normal: { transform: "rotateY(0deg)" },
@@ -36,6 +38,12 @@ const CardExercise = ({
   };
 
   useEffect(() => {
+    //Set timeout so card doesn't get flipped instantly when it loads
+    setTimeout(() => {
+      console.log("Unfrozen");
+      setKeyboardFrozen(false);
+    }, 500);
+
     window.addEventListener("keydown", keyboardHandler);
 
     // cleanup this component
@@ -45,11 +53,13 @@ const CardExercise = ({
   }, []);
 
   const keyboardHandler = (event: KeyboardEvent) => {
-    if (event.key === "Enter" || event.code === "NumpadEnter") {
+    if (
+      !keyboardFrozenRef.current &&
+      (event.key === "Enter" || event.code === "NumpadEnter")
+    ) {
       if (isFlippedRef.current) {
         nextExerciseHandler();
       } else {
-        console.log("flip");
         flip();
       }
     }
